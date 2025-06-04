@@ -18,11 +18,11 @@ defineProps<{
   <SidebarGroup>
     <SidebarGroupLabel
       class="group/label text-xs"
-    >{{ group.label }}
+    >{{ group.text }}
     </SidebarGroupLabel>
     <SidebarGroupAction v-if="group.action" @click="handleAction(group.action)">
       <component v-if="actionHas('icon', group.action)" :is="group.action.icon"></component>
-      <span class="sr-only" v-if="actionHas('label', group.action)">{{
+      <span class="sr-only" v-if="actionHas('text', group.action)">{{
         group.action?.label || ''
       }}</span>
     </SidebarGroupAction>

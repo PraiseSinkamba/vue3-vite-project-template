@@ -8,15 +8,15 @@ import { ref } from 'vue'
 // import HelloWorld from '@/components/HelloWorld.vue'
 
 const saveAction = createAction(() => console.log('Saving...'), {
-  label: 'Save',
+  text: 'Save',
   icon: SaveIcon,
 })
 
 const exportMenu = createAction(() => console.log('Export menu opened'), {
-  label: 'Export',
+  text: 'Export',
   items: [
-    { label: 'PDF', action: () => console.log('Export PDF') },
-    { label: 'CSV', action: () => console.log('Export CSV') },
+    { text: 'PDF', onClick: () => console.log('Export PDF') },
+    { text: 'CSV', onClick: () => console.log('Export CSV') },
   ],
 })
 
@@ -24,28 +24,28 @@ const exportMenu = createAction(() => console.log('Export menu opened'), {
 const sidebarContent = ref<SidebarItem[]>([
   {
     type: 'group',
-    label: 'Documents',
+    text: 'Documents',
     icon: FileSpreadsheetIcon,
     collapsible: true,
     defaultOpen: true,
     children: [
       {
         type: 'item',
-        label: 'Dashboard',
+        text: 'tasks',
         icon: LayoutDashboardIcon,
-        to: '/about',
+        to: '/tasks',
       },
       {
         type: 'item',
-        label: 'Templates',
-        action: saveAction,
+        text: 'Templates',
+        onClick: saveAction,
         badge: 5,
         active: true,
       },
       {
         type: 'item',
-        label: 'Reports',
-        action: exportMenu,
+        text: 'Reports',
+        onClick: exportMenu,
       },
     ],
   },
@@ -54,30 +54,33 @@ const sidebarContent = ref<SidebarItem[]>([
   },
   {
     type: 'group',
-    label: 'Settings',
+    text: 'Settings',
     action: {
       icon: FileSpreadsheetIcon,
-      action: () => console.log('Export PDF'),
+      onClick: () => console.log('Export PDF'),
     },
     children: [
       {
         type: 'menu',
-        label: 'Settings',
+        text: 'Settings',
         defaultOpen: true,
         icon: SettingsIcon,
         children: [
           {
             type: 'item',
             icon: User,
-            label: 'Account',
-            action: () => console.log('Navigate to Profile'),
+            text: 'Account',
+            onClick: () => console.log('Navigate to Profile'),
+          },
+          {
+            type: 'separator'
           },
           {
             type: 'item',
             variant:'destructive',
             icon: LogOut,
-            label: 'Logout',
-            action: () => console.log('Logout'),
+            text: 'Logout',
+            onClick: () => console.log('Logout'),
           },
         ],
       },
@@ -88,7 +91,7 @@ const sidebarContent = ref<SidebarItem[]>([
 
 <template>
   <SidebarProvider>
-    <AppSidebar :rail="false" variant="inset" :content="sidebarContent" />
+    <AppSidebar :rail="false" collapsible="icon" :content="sidebarContent" />
     <SidebarInset>
       <RouterView />
     </SidebarInset>

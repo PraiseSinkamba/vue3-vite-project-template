@@ -21,7 +21,7 @@ defineProps<{
       <SidebarGroupLabel class="group/label text-xs" as-child>
         <CollapsibleTrigger>
           <!--          <component v-if="group.action?.icon" :is="group.icon"></component>-->
-          {{ group.label }}
+          {{ group.text }}
           <ChevronDown
             class="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180"
           />

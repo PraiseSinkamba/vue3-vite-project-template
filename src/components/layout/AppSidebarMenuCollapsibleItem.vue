@@ -20,7 +20,7 @@ defineProps<{
          <SidebarMenuButton as-child>
            <a href="#">
              <component v-if="item.icon" :is="item.icon" />
-             <span>{{ item.label }}</span>
+             <span>{{ item.text }}</span>
              <Plus class="ml-auto group-data-[state=open]/collapsible:hidden" />
              <Minus class="ml-auto group-data-[state=closed]/collapsible:hidden" />
            </a>
@@ -32,7 +32,7 @@ defineProps<{
          <SidebarMenuSub v-if="item.children">
            <SidebarMenuSubItem v-for="(sub, index) in item.children" :key="index">
              <SidebarMenuSubButton>
-               <a :href="sub.path || '#'" class="size-full">{{ sub.label }}</a>
+               <a :href="sub.path || '#'" class="size-full">{{ sub.text }}</a>
              </SidebarMenuSubButton>
            </SidebarMenuSubItem>
          </SidebarMenuSub>

@@ -1,89 +1,70 @@
 <template>
   <div
-      class="page-container"
-      :class="[
+    class="page-container"
+    :class="[
       `page-padding-${config?.contentPadding || 'default'}`,
       `page-max-width-${config?.maxWidth || 'full'}`,
       `page-bg-${config?.background || 'transparent'}`,
-      { 'pointer-events-none': loading }
+      { 'pointer-events-none': loading },
     ]"
   >
     <!-- Header Section -->
     <header
-        v-if="!hideHeader"
-        :class="['page-header',{
-          'page-header-fixed': fixedHeader
-        }]"
+      v-if="!hideHeader"
+      :class="[
+        'page-header',
+        {
+          'page-header-fixed': fixedHeader,
+        },
+      ]"
     >
       <!-- Back Button -->
-      <div :class="['flex',backButton?.inline ? 'flex-row':'flex-col']">
+      <div :class="['flex', backButton?.inline ? 'flex-row' : 'flex-col']">
         <div v-if="backButton" class="page-header-back">
           <Button
-              v-if="backButton.visible"
-              :variant="backButton.variant || 'ghost'"
-              size="sm"
-              :class="['p-1 text-secondary-foreground font-bold',{'pl-2 mt-2':backButton?.inline}]"
-              @click="handleBackAction"
+            v-if="backButton.visible"
+            :variant="backButton.variant || 'ghost'"
+            size="sm"
+            :class="[
+              'p-1 text-secondary-foreground font-bold',
+              { 'pl-2 mt-2': backButton?.inline },
+            ]"
+            @click="handleBackAction"
           >
             <template v-if="backButton.icon">
               <component
-                  :is="backButton.icon"
-                  class="mr-2 h-6 w-6"
-                  v-bind="backButton.iconProps || {}"
+                :is="backButton.icon"
+                class="mr-2 h-6 w-6"
+                v-bind="backButton.iconProps || {}"
               />
             </template>
-            <ArrowLeftFromLineIcon v-else/>
+            <ArrowLeftFromLineIcon v-else />
             {{ backButton.text }}
           </Button>
         </div>
 
         <!-- Title Section -->
-        <div :class="['page-header-title p-2',backButton?.inline ? 'flex-1' : 'w-full']">
+        <div :class="['page-header-title p-2', backButton?.inline ? 'flex-1' : 'w-full']">
           <div class="title-container">
             <h2 class="page-title">
               {{ title }}
-              <span
-                  v-for="(badge, index) in titleBadges"
-                  :key="index"
-                  class="title-badge"
-              >
-              <Badge
-                  :variant="badge.variant || 'secondary'"
-                  :class="badge.class"
-              >
-                <component
-                    v-if="badge.icon"
-                    :is="badge.icon"
-                    class="mr-1 h-3 w-3"
-                />
-                {{ badge.text }}
-              </Badge>
-            </span>
+              <span v-for="(badge, index) in titleBadges" :key="index" class="title-badge">
+                <Badge :variant="badge.variant || 'secondary'" :class="badge.class">
+                  <component v-if="badge.icon" :is="badge.icon" class="mr-1 h-3 w-3" />
+                  {{ badge.text }}
+                </Badge>
+              </span>
             </h2>
 
-            <p
-                v-if="subtitle"
-                class="page-subtitle"
-            >
+            <p v-if="subtitle" class="page-subtitle">
               {{ subtitle }}
             </p>
           </div>
 
           <!-- Header Metadata -->
-          <div
-              v-if="headerMetadata && headerMetadata.length"
-              class="page-header-metadata"
-          >
-            <div
-                v-for="(meta, index) in headerMetadata"
-                :key="index"
-                class="metadata-item"
-            >
-              <component
-                  v-if="meta.icon"
-                  :is="meta.icon"
-                  class="mr-2 h-4 w-4"
-              />
+          <div v-if="headerMetadata && headerMetadata.length" class="page-header-metadata">
+            <div v-for="(meta, index) in headerMetadata" :key="index" class="metadata-item">
+              <component v-if="meta.icon" :is="meta.icon" class="mr-2 h-4 w-4" />
               <span class="metadata-label">{{ meta.label }}:</span>
               <span class="metadata-value">{{ meta.value }}</span>
             </div>
@@ -93,35 +74,27 @@
           <div class="page-header-actions">
             <div class="secondary-actions">
               <Button
-                  v-for="(action, index) in secondaryActions"
-                  :key="index"
-                  :variant="action.variant || 'outline'"
-                  @click="action.onClick"
-                  :disabled="action.disabled"
-                  class="mr-2"
+                v-for="(action, index) in secondaryActions"
+                :key="index"
+                :variant="action.variant || 'outline'"
+                @click="action.onClick"
+                :disabled="action.disabled"
+                class="mr-2"
               >
-                <component
-                    v-if="action.icon"
-                    :is="action.icon"
-                    class="mr-2 h-4 w-4"
-                />
+                <component v-if="action.icon" :is="action.icon" class="mr-2 h-4 w-4" />
                 {{ action.text }}
               </Button>
             </div>
 
             <Button
-                v-if="primaryAction"
-                size="sm"
-                class="text-sm"
-                :variant="primaryAction.variant || 'default'"
-                @click="primaryAction.onClick"
-                :disabled="primaryAction.disabled"
+              v-if="primaryAction"
+              size="sm"
+              class="text-sm"
+              :variant="primaryAction.variant || 'default'"
+              @click="primaryAction.onClick"
+              :disabled="primaryAction.disabled"
             >
-              <component
-                  v-if="primaryAction.icon"
-                  :is="primaryAction.icon"
-                  class="mr-2 h-4 w-4"
-              />
+              <component v-if="primaryAction.icon" :is="primaryAction.icon" class="mr-2 h-4 w-4" />
               {{ primaryAction.text }}
             </Button>
           </div>
@@ -136,42 +109,32 @@
       </div>
       <slot v-else-if="showSkeleton" name="skeleton"></slot>
       <slot v-else>
-        <div class="no-content-placeholder h-full w-full text-center">
-          No content provided
-        </div>
+        <div class="no-content-placeholder h-full w-full text-center">No content provided</div>
       </slot>
     </main>
     <!-- Loading Overlay -->
-    <div
-        v-if="loading"
-        class="page-loading-overlay"
-    >
+    <div v-if="loading" class="page-loading-overlay">
       <div class="page-loading-content">
         <slot name="loading">
-          <LoadingSpinner class="w-12 h-12"/>
+          <LoadingSpinner class="w-12 h-12" />
         </slot>
       </div>
     </div>
 
-
     <!-- Footer Slot -->
-    <PageFooter
-        v-if="$slots.footer"
-        :fixed="config?.fixedFooter"
-        :actions="footerActions"
-    >
-      <slot name="footer"/>
+    <PageFooter v-if="$slots.footer" :fixed="config?.fixedFooter" :actions="footerActions">
+      <slot name="footer" />
     </PageFooter>
   </div>
 </template>
 
 <script setup lang="ts">
-import {type Component, type FunctionalComponent, type VNode} from 'vue'
-import {Button} from '@/components/ui/button'
-import {Badge} from '@/components/ui/badge'
-import {PageFooter} from '@/components/ui/page'
-import {ArrowLeftFromLineIcon} from 'lucide-vue-next'
-import LoadingSpinner from "@/components/icons/LoadingSpinner.vue";
+import { type Component, type FunctionalComponent, type VNode } from 'vue'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { PageFooter } from '@/components/ui/page'
+import { ArrowLeftFromLineIcon } from 'lucide-vue-next'
+import { LoadingSpinner } from './index.ts'
 /*
 
 onMounted(async ()=>{
@@ -240,7 +203,7 @@ interface PageProps {
 const props = withDefaults(defineProps<PageProps>(), {
   fixedHeader: true,
   hideHeader: false,
-  backButton: () => ({visible: false}),
+  backButton: () => ({ visible: false }),
   titleBadges: () => [],
   secondaryActions: () => [],
   headerMetadata: () => [],
@@ -248,11 +211,11 @@ const props = withDefaults(defineProps<PageProps>(), {
     contentPadding: 'default',
     maxWidth: 'full',
     background: 'transparent',
-    fixedFooter: false
+    fixedFooter: false,
   }),
   loading: false,
   showSkeleton: false,
-  footerActions: () => []
+  footerActions: () => [],
 })
 
 // Handle back button action
@@ -266,7 +229,7 @@ function handleBackAction() {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .page-container {
   @apply flex flex-col min-h-full w-full;
 }

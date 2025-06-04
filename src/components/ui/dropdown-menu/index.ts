@@ -1,3 +1,5 @@
+import type { FunctionalComponent, VNode } from 'vue'
+
 export { default as DropdownMenu } from './DropdownMenu.vue'
 
 export { default as DropdownMenuCheckboxItem } from './DropdownMenuCheckboxItem.vue'
@@ -13,4 +15,16 @@ export { default as DropdownMenuSub } from './DropdownMenuSub.vue'
 export { default as DropdownMenuSubContent } from './DropdownMenuSubContent.vue'
 export { default as DropdownMenuSubTrigger } from './DropdownMenuSubTrigger.vue'
 export { default as DropdownMenuTrigger } from './DropdownMenuTrigger.vue'
+export { default as QuickDropdown } from './QuickDropdown.vue'
+export { default as ResponsiveMenu } from './ResponsiveDropdown.vue'
 export { DropdownMenuPortal } from 'reka-ui'
+export interface MenuItem {
+  id: string
+  label: string
+  icon?: FunctionalComponent | VNode
+  variant?: 'default' | 'destructive'
+  disabled?: boolean
+  separator?: boolean
+  children?: MenuItem[]
+  onClick?: () => void
+}

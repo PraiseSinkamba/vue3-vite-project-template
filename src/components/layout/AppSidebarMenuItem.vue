@@ -14,7 +14,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger, QuickDropdown
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal } from 'lucide-vue-next'
 
@@ -28,11 +29,11 @@ const { isMobile } = useSidebar()
     <SidebarMenuButton :is-active="item.type === 'item' && item?.active" as-child>
       <RouterLink v-if="item.type === 'item' && item?.to" :to="item.to">
         <component v-if="item.icon" :is="item.icon" />
-        <span>{{ item.label }}</span>
+        <span>{{ item.text }}</span>
       </RouterLink>
       <a v-else :href="item.type === 'item' ? item.path || '#' : '#'">
         <component v-if="item.icon" :is="item.icon" />
-        <span>{{ item.label }}</span>
+        <span>{{ item.text }}</span>
       </a>
     </SidebarMenuButton>
     <SidebarMenuBadge v-if="item.type === 'item' && item.badge">{{ item.badge }}</SidebarMenuBadge>
@@ -40,34 +41,16 @@ const { isMobile } = useSidebar()
       <SidebarMenuSub v-if="item.submenu && item.children">
         <SidebarMenuSubItem v-for="(sub, index) in item.children" :key="index">
           <SidebarMenuSubButton>
-            <a :href="sub.path || '#'">{{ sub.label }}</a>
+            <a :href="sub.path || '#'">{{ sub.text }}</a>
           </SidebarMenuSubButton>
         </SidebarMenuSubItem>
       </SidebarMenuSub>
-      <DropdownMenu v-else>
-        <DropdownMenuTrigger as-child>
-          <SidebarMenuAction show-on-hover>
-            <MoreHorizontal />
-            <span class="sr-only">More</span>
-          </SidebarMenuAction>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          class="w-56 rounded-lg"
-          :side="isMobile ? 'bottom' : 'right'"
-          :align="isMobile ? 'end' : 'start'"
-        >
-          <DropdownMenuItem
-            :variant="menu.variant"
-            :class="menu.classes ||''"
-            v-for="(menu, index) in item.children"
-            :key="index"
-          >
-            <component v-if="menu.icon" :is="menu.icon" class="text-muted-foreground" />
-            <span>{{ menu.label }}</span>
-          </DropdownMenuItem>
-          <!--          <DropdownMenuSeparator />-->
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <QuickDropdown v-else :items="item.children">
+        <SidebarMenuAction show-on-hover>
+          <MoreHorizontal />
+          <span class="sr-only">More</span>
+        </SidebarMenuAction>
+      </QuickDropdown>
     </template>
   </SidebarMenuItem>
 </template>

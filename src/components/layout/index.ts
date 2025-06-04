@@ -8,22 +8,22 @@ type ActionHandler = () => void
 
 interface ActionProperties {
   icon?: VNode | FunctionalComponent
-  label?: string
-  action: () => void
+  text?: string
+  onClick: () => void
   items?: MenuItemAction[]
 }
 
 type Action = ActionHandler & ActionProperties
 
 interface MenuItemAction {
-  label: string
-  action: ActionHandler
+  text: string
+  onClick: ActionHandler
   icon?: VNode | FunctionalComponent
   badge?: string | number
 }
 
 // Action factory function
-function createAction(handler: ActionHandler, props?: Omit<Partial<Action>, 'action'>): Action {
+function createAction(handler: ActionHandler, props?: Omit<Partial<Action>, 'onClick'>): Action {
   const action = () => handler()
   return <Action>Object.assign(action, props)
 }
@@ -39,9 +39,9 @@ function isPlainActionHandler(action: Action | ActionHandler): action is ActionH
   return (
     typeof action === 'function' &&
     !('icon' in action) &&
-    !('label' in action) &&
+    !('text' in action) &&
     !('items' in action) &&
-    !('action' in action)
+    !('onClick' in action)
   )
 }
 
@@ -49,12 +49,12 @@ function isPlainActionHandler(action: Action | ActionHandler): action is ActionH
 function isExtendedAction(action: Action | ActionHandler): action is Action {
   return (
     typeof action === 'object' &&
-    ('icon' in action || 'label' in action || 'items' in action || 'action' in action)
+    ('icon' in action || 'text' in action || 'items' in action || 'action' in action)
   )
 }
 
 function handleAction(action: Action|ActionHandler){
-  if(isExtendedAction(action)) action.action()
+  if(isExtendedAction(action)) action.onClick()
   else if(isPlainActionHandler(action)) action()
 }
 
@@ -66,7 +66,7 @@ type SidebarItemType = 'item' | 'group' | 'menu' | 'separator'
 interface BaseItem {
   type: SidebarItemType
   icon?: VNode | FunctionalComponent
-  label?: string
+  text?: string
 }
 
 interface SeparatorItem extends BaseItem {
@@ -76,7 +76,7 @@ interface SeparatorItem extends BaseItem {
 interface SingleItem extends BaseItem {
   type: 'item'
   active?: boolean
-  action?: ActionHandler | Action
+  onClick?: ActionHandler | Action
   variant?: 'default'|'destructive'
   classes?: string
   badge?: string | number
@@ -89,7 +89,7 @@ interface MenuItem extends BaseItem {
   collapsible?: boolean
   defaultOpen?: boolean
   submenu?: boolean
-  children: SingleItem[] // Only SingleItems in menus
+  children: (SingleItem | SeparatorItem)[] // Only SingleItems in menus
 }
 
 interface GroupItem extends BaseItem {
