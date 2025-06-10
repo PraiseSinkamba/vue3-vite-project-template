@@ -7,10 +7,11 @@ import {
 } from '@/components/ui/dropdown-menu/index.ts'
 import { useSidebar } from '@/components/ui/sidebar'
 import type { SeparatorItem, SingleItem } from '@/components/layout'
+import type { Action } from '@/components/ui/page'
 
 const { isMobile } = useSidebar()
 defineProps<{
-  items: (SingleItem | SeparatorItem)[]
+  items: (SingleItem | SeparatorItem|Action)[]
 }>()
 </script>
 
@@ -25,7 +26,7 @@ defineProps<{
       :align="isMobile ? 'end' : 'start'"
     >
       <template v-for="(menu, index) in items" :key="index">
-        <DropdownMenuSeparator v-if="menu.type === 'separator'" />
+        <DropdownMenuSeparator v-if="'type' in menu && menu.type === 'separator'" />
         <DropdownMenuItem @click="menu?.onClick" v-else :variant="menu.variant" :class="menu.classes || ''">
           <component v-if="menu.icon" :is="menu.icon" class="text-muted-foreground" />
           <span>{{ menu.text }}</span>

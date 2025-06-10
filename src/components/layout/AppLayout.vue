@@ -5,7 +5,6 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import { RouterView } from 'vue-router'
 import { ref } from 'vue'
-// import HelloWorld from '@/components/HelloWorld.vue'
 
 const saveAction = createAction(() => console.log('Saving...'), {
   text: 'Save',
@@ -91,7 +90,7 @@ const sidebarContent = ref<SidebarItem[]>([
 
 <template>
   <SidebarProvider>
-    <AppSidebar :rail="false" collapsible="icon" :content="sidebarContent" />
+    <AppSidebar :variant="'inset'" :rail="false" collapsible="offcanvas" :content="sidebarContent" />
     <SidebarInset>
       <RouterView />
     </SidebarInset>

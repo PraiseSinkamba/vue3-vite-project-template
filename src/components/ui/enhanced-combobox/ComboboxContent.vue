@@ -118,10 +118,10 @@ onMounted(() => {
           {{ emptyMessage }}
           <Button
             v-if="canCreateNew"
-            variant="secondary"
+            variant="outline"
             size="sm"
             @click="() => handleCreateOption(searchValue)"
-            class="h-8 w-full"
+            class="h-8 w-full rounded-none"
           >
             <PlusIcon />
             Create <strong>"{{ searchValue }}"</strong>
@@ -178,7 +178,7 @@ onMounted(() => {
             </div>
           </div>
         </template>
-        <template v-else-if="!error && filteredOptions.length === 0">
+        <template v-else-if="!searchValue && !error && filteredOptions.length === 0">
           <div class="p-4 flex-col flex justify-center items-center">
             <p class="font-semibold font-md">No content</p>
             <div class="flex flex-wrap gap-2 mt-2">
