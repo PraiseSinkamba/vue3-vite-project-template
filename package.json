@@ -19,6 +19,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@pinia/colada": "^0.17.0",
     "@radix-icons/vue": "^1.0.0",
     "@tailwindcss/vite": "^4.1.7",
     "@tanstack/vue-table": "^8.21.3",
@@ -44,6 +45,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@pinia/colada-devtools": "^0.1.2",
     "@tsconfig/node22": "^22.0.1",
     "@types/jsdom": "^21.1.7",
     "@types/lodash": "^4.17.16",
