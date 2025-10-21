@@ -48,7 +48,7 @@ const props = withDefaults(defineProps<PageFooterProps>(), {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .page-footer {
   @apply border-t px-4 py-3 flex justify-center;
 }

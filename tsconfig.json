@@ -15,6 +15,8 @@
     "module": "NodeNext",
     "baseUrl": ".",
     "paths": {
+      "@/Primitive": ["./node_modules/reka-ui/Primitive", "./node_modules/reka-ui/dist/Primitive"],
+      "@/shared": ["./node_modules/reka-ui/shared", "./node_modules/reka-ui/dist/shared"],
       "@/*": ["./src/*"]
     },
     "jsx": "preserve",

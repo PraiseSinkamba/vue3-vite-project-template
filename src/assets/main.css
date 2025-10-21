@@ -1,1 +1,7 @@
 @import './base.css';
+@import './daypilot-theme.css';
+/*
+DayPilot Calendar Theme - Integrated with shadcn-vue Design System
+Place this in: src/assets/styles/daypilot-theme.css
+Import in main.ts: import '@/assets/styles/daypilot-theme.css'
+*/

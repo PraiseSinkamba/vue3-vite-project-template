@@ -1,36 +1,24 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import AppLayout from '@/components/layout/AppLayout.vue'
-import TaskExample from '@/views/tasks/TaskExample.vue'
+import { createRouter, createWebHistory } from 'vue-router/auto'
+import { routes, handleHotUpdate } from 'vue-router/auto-routes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      component: AppLayout,
-      children:[
-        {
-          path: '/',
-          name: 'home',
-          component: HomeView,
-        },
-        {
-          path: '/tasks',
-          name: 'tasks',
-          component: TaskExample,
-        },
-        {
-          path: '/about',
-          name: 'about',
-          // route level code-splitting
-          // this generates a separate chunk (About.[hash].js) for this route
-          // which is lazy-loaded when the route is visited.
-          component: () => import('../views/AboutView.vue'),
-        }
-      ]
-    },
-  ],
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      return { el: to.hash, behavior: 'smooth' }
+    }
+    return savedPosition ?? { top: 0 }
+  },
 })
+// router.beforeEach((to, from) => {
+//   const auth = useAuthStore()
+//   if(to.path.startsWith("/admin")){
+
+//   }
+// })
+if (import.meta.hot) {
+  handleHotUpdate(router)
+}
 
 export default router

@@ -1,9 +1,10 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "./typed-router.d.ts"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "moduleResolution": "Bundler",
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
@@ -11,7 +12,10 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
+      "@/Primitive": ["./node_modules/reka-ui/Primitive", "./node_modules/reka-ui/dist/Primitive"],
+      "@/shared": ["./node_modules/reka-ui/shared", "./node_modules/reka-ui/dist/shared"],
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["unplugin-vue-router/client"]
   }
 }

@@ -1,0 +1,509 @@
+
+/* ============================================
+   DayPilot CSS Variables mapped to your design tokens
+   ============================================ */
+
+.calendar_default_main {
+  /* Typography - Using your custom fonts */
+  --dp-calendar-font-family: var(--text-family) !important;
+  --dp-calendar-font-size: 13px!important;
+  --dp-calendar-rowheader-font-size: 14px!important;
+
+  /* Colors - Mapped to your design system */
+  --dp-calendar-border-color: var(--color-border) !important;
+  --dp-calendar-header-bg-color: var(--color-muted) !important;
+  --dp-calendar-header-color: var(--color-foreground) !important;
+
+  /* Cell Colors */
+  --dp-calendar-cell-bg-color: var(--color-background) !important;
+  --dp-calendar-cell-business-bg-color: var(--color-card) !important;
+  --dp-calendar-cell-border-color: var(--color-border) !important;
+
+  /* Column/Row Headers */
+  --dp-calendar-colheader-padding: 8px!important;
+  --dp-calendar-colheader-vertical-align: center!important;
+  --dp-calendar-colheader-horizontal-align: center!important;
+  --dp-calendar-rowheader-padding: 8px!important;
+
+  /* Event Styling */
+  --dp-calendar-event-color: var(--color-foreground) !important;
+  --dp-calendar-event-border-color: var(--color-primary) !important;
+  --dp-calendar-event-border: 1px solid var(--color-primary) !important;
+  --dp-calendar-event-border-radius: var(--radius-md) !important;
+  --dp-calendar-event-box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
+
+  /* Event Gradient Background */
+  --dp-calendar-event-bg-top-color: var(--color-card) !important;
+  --dp-calendar-event-bg-bottom-color: var(--color-muted) !important;
+  --dp-calendar-event-background: linear-gradient(to bottom, var(--dp-calendar-event-bg-top-color) 0%, var(--dp-calendar-event-bg-bottom-color) 100%) !important;
+
+  /* Event Bar (left accent) */
+  --dp-calendar-event-bar-bg-color: var(--color-primary) !important;
+  --dp-calendar-event-bar-color: var(--color-primary-700) !important;
+  --dp-calendar-event-bar-width: 4px!important;
+  --dp-calendar-event-bar-left: 0!important;
+  --dp-calendar-event-bar-bottom: 0!important;
+  --dp-calendar-event-bar-top: 0!important;
+  --dp-calendar-event-bar-display: block!important;
+
+  /* Event Padding */
+  --dp-calendar-event-padding: 6px!important;
+  --dp-calendar-event-padding-left: 12px!important;
+
+  /* All-day Events */
+  --dp-calendar-allday-event-color: var(--color-foreground) !important;
+  --dp-calendar-allday-event-border-color: var(--color-border) !important;
+  --dp-calendar-allday-event-border: 1px solid var(--color-border) !important;
+  --dp-calendar-allday-event-border-radius: var(--radius-md) !important;
+  --dp-calendar-allday-event-bg-top-color: var(--color-card) !important;
+  --dp-calendar-allday-event-bg-bottom-color: var(--color-muted) !important;
+  --dp-calendar-allday-event-background: linear-gradient(to bottom, var(--dp-calendar-allday-event-bg-top-color) 0%, var(--dp-calendar-allday-event-bg-bottom-color) 100%) !important;
+  --dp-calendar-allday-event-box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+  --dp-calendar-allday-event-padding: 6px!important;
+  --dp-calendar-allday-event-horizontal-align: flex-start!important;
+
+  /* Messages/Notifications */
+  --dp-calendar-message-bg-color: var(--color-primary) !important;
+  --dp-calendar-message-color: var(--color-primary-foreground) !important;
+  --dp-calendar-message-padding: 12px 16px!important;
+  --dp-calendar-message-opacity: 0.95!important;
+
+  /* Selection & Interaction */
+  --dp-calendar-selected-event-bg-color: var(--color-accent) !important;
+  --dp-calendar-shadow-color: var(--color-muted) !important;
+  --dp-calendar-shadow-border-color: var(--color-primary) !important;
+  --dp-calendar-forbidden-shadow-border-color: var(--color-destructive) !important;
+  --dp-calendar-forbidden-shadow-bg-color: var(--color-destructive) !important;
+
+  /* Current Time Indicator */
+  --dp-calendar-now-indicator-color: var(--color-destructive) !important;
+
+  /* Scroll Background */
+  --dp-calendar-scroll-bg-color: var(--color-muted) !important;
+}
+
+/* ============================================
+   Dark Mode Support
+   ============================================ */
+
+.dark .calendar_default_main {
+  /* Adjust opacity for dark mode readability */
+  --dp-calendar-event-box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+
+  /* Slightly different event background for dark mode */
+  --dp-calendar-event-bg-top-color: var(--color-card);
+  --dp-calendar-event-bg-bottom-color: var(--color-base-900);
+
+  /* More visible borders in dark mode */
+  --dp-calendar-cell-border-color: var(--color-base-800);
+
+  /* Adjust header colors for better contrast */
+  --dp-calendar-header-bg-color: var(--color-base-900);
+}
+
+/* ============================================
+   Base DayPilot Structure (keep as-is)
+   ============================================ */
+
+.calendar_default_main *, .calendar_default_main *:before, .calendar_default_main *:after {
+  box-sizing: content-box;
+}
+
+.calendar_default_main {
+  border: 1px solid var(--dp-calendar-border-color);
+  font-family: var(--dp-calendar-font-family);
+  font-size: var(--dp-calendar-font-size);
+}
+
+.calendar_default_rowheader_inner, .calendar_default_cornerright_inner, .calendar_default_corner_inner, .calendar_default_colheader_inner, .calendar_default_alldayheader_inner {
+  color: var(--dp-calendar-header-color);
+  background: var(--dp-calendar-header-bg-color);
+}
+
+.calendar_default_colheader_back {
+  background: var(--dp-calendar-header-bg-color);
+}
+
+.calendar_default_colheader_back_inner {
+  position: absolute;
+  inset: 0;
+  border-bottom: 1px solid var(--dp-calendar-border-color);
+}
+
+.calendar_default_cornerright_inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border-bottom: 1px solid var(--dp-calendar-border-color);
+}
+
+.calendar_default_direction_rtl .calendar_default_cornerright_inner {
+  border-right: 1px solid var(--dp-calendar-border-color);
+}
+
+.calendar_default_rowheader_inner {
+  font-size: var(--dp-calendar-rowheader-font-size);
+  text-align: right;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border-right: 1px solid var(--dp-calendar-border-color);
+  border-bottom: 1px solid var(--dp-calendar-border-color);
+  padding: var(--dp-calendar-rowheader-padding);
+}
+
+.calendar_default_rowheader_simple .calendar_default_rowheader_inner {
+  font-size: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.calendar_default_direction_rtl .calendar_default_rowheader_inner {
+  border-right: none;
+}
+
+.calendar_default_corner_inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border-right: 1px solid var(--dp-calendar-border-color);
+  border-bottom: 1px solid var(--dp-calendar-border-color);
+}
+
+.calendar_default_direction_rtl .calendar_default_corner_inner {
+  border-right: none;
+}
+
+.calendar_default_rowheader_minutes {
+  font-size: 10px;
+  vertical-align: super;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.calendar_default_colheader_inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: var(--dp-calendar-colheader-padding);
+  border-right: 1px solid var(--dp-calendar-border-color);
+  border-bottom: 1px solid var(--dp-calendar-border-color);
+  display: flex;
+  align-items: var(--dp-calendar-colheader-vertical-align);
+  justify-content: var(--dp-calendar-colheader-horizontal-align);
+  font-weight: 500;
+}
+
+.calendar_default_cell_inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border-right: 1px solid var(--dp-calendar-cell-border-color);
+  border-bottom: 1px solid var(--dp-calendar-cell-border-color);
+  background: var(--dp-calendar-cell-bg-color);
+}
+
+.calendar_default_cell_business .calendar_default_cell_inner {
+  background: var(--dp-calendar-cell-business-bg-color);
+}
+
+.calendar_default_alldayheader_inner {
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border-right: 1px solid var(--dp-calendar-border-color);
+  border-bottom: 1px solid var(--dp-calendar-border-color);
+}
+
+.calendar_default_message {
+  opacity: var(--dp-calendar-message-opacity);
+  padding: var(--dp-calendar-message-padding);
+  color: var(--dp-calendar-message-color);
+  background: var(--dp-calendar-message-bg-color);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+}
+
+.calendar_default_event_inner {
+  color: var(--dp-calendar-event-color);
+  border: var(--dp-calendar-event-border);
+  border-radius: var(--dp-calendar-event-border-radius);
+  background: var(--dp-calendar-event-background);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.calendar_default_event:hover .calendar_default_event_inner {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transform: translateY(-1px);
+}
+
+.calendar_default_alldayevent {
+  box-shadow: var(--dp-calendar-allday-event-box-shadow);
+  border-radius: var(--dp-calendar-allday-event-border-radius);
+}
+
+.calendar_default_alldayevent_inner {
+  color: var(--dp-calendar-allday-event-color);
+  border: var(--dp-calendar-allday-event-border);
+  border-radius: var(--dp-calendar-allday-event-border-radius);
+  background: var(--dp-calendar-allday-event-background);
+}
+
+.calendar_default_event_bar {
+  display: var(--dp-calendar-event-bar-display);
+  top: var(--dp-calendar-event-bar-top);
+  bottom: var(--dp-calendar-event-bar-bottom);
+  left: var(--dp-calendar-event-bar-left);
+  width: var(--dp-calendar-event-bar-width);
+  background-color: var(--dp-calendar-event-bar-bg-color);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.calendar_default_direction_rtl .calendar_default_event_bar {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: var(--dp-calendar-event-bar-width);
+  background-color: var(--dp-calendar-event-bar-bg-color);
+}
+
+.calendar_default_event_bar_inner {
+  position: absolute;
+  width: var(--dp-calendar-event-bar-width);
+  background-color: var(--dp-calendar-event-bar-color);
+}
+
+.calendar_default_selected .calendar_default_event_inner {
+  background: var(--dp-calendar-selected-event-bg-color);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring);
+}
+
+.calendar_default_alldayevent_inner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  padding: var(--dp-calendar-allday-event-padding);
+  margin-right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: var(--dp-calendar-allday-event-horizontal-align);
+}
+
+.calendar_default_event_withheader .calendar_default_event_inner {
+  padding-top: 15px;
+}
+
+.calendar_default_event {
+  box-shadow: var(--dp-calendar-event-box-shadow);
+  border-radius: var(--dp-calendar-event-border-radius);
+  cursor: pointer;
+}
+
+.calendar_default_event_inner {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--dp-calendar-event-padding) var(--dp-calendar-event-padding) var(--dp-calendar-event-padding) var(--dp-calendar-event-padding-left);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.calendar_default_direction_rtl .calendar_default_event_inner {
+  padding: var(--dp-calendar-event-padding) var(--dp-calendar-event-padding-left) var(--dp-calendar-event-padding) var(--dp-calendar-event-padding);
+}
+
+.calendar_default_shadow_inner {
+  box-sizing: border-box;
+  background-color: var(--dp-calendar-shadow-color);
+  border: 2px solid var(--dp-calendar-shadow-border-color);
+  opacity: 0.5;
+  height: 100%;
+  border-radius: var(--radius-md);
+}
+
+.calendar_default_shadow {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.calendar_default_shadow_forbidden:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724%27 height=%2724%27 viewBox=%270 0 24 24%27%3E%3Ccircle cx=%2712%27 cy=%2712%27 r=%2711%27 fill=%27%23ef4444%27 /%3E%3Cline x1=%276%27 y1=%276%27 x2=%2718%27 y2=%2718%27 stroke=%27white%27 stroke-width=%272%27/%3E%3Cline x1=%2718%27 y1=%276%27 x2=%276%27 y2=%2718%27 stroke=%27white%27 stroke-width=%272%27/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.calendar_default_shadow_forbidden .calendar_default_shadow_inner {
+  border: 2px solid var(--dp-calendar-forbidden-shadow-border-color);
+  background: var(--dp-calendar-forbidden-shadow-bg-color);
+}
+
+/* Delete button styling */
+.calendar_default_event_delete {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjExR/NCNwAAAI5JREFUKFNtkLERgCAMRbmzdK8s4gAUlhYOYEHJEJYOYOEwDmGBPxC4kOcalendar_defaultvePy84MGR0RJ2N1A8H3N6DATwSQ57m2ql8NBG+AEM7D+UW+wjdfUPgerYNgB5gOLRHqhcasg84C2QxPMtrUhSqQIhg7ypy9VM2EUZPI/4rQ7rGxqo9sadTegw+UdjeDLAKUfhbaQUVPIfJYAAAAASUVORK5CYII=) center center no-repeat;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.calendar_default_event_delete:hover {
+  opacity: 1;
+}
+
+.calendar_default_scroll_up, .calendar_default_scroll_down {
+  background-color: var(--color-muted);
+}
+
+.calendar_default_scroll_up {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAB3RJTUUH2wESDiYcrhwCiQAAAAlwSFlzAAAuIwAALiMBeKU/dgAAAARnQU1BAACxjwv8YQUAAACcSURBVHjaY2AgF9wWsTW6yGMlhi7OhC7AyMDQzMnBXIcalendar_defaultHAFuCtuaMTP+P8nA8P/b1x//FfW/HHuF1UQmxv+NUP1c3OxMVVhNvCVi683E8H8LXOY/w9+fTH81tF8fv4NiIpBRj+YoZtZ/LDUoJmKYhsVUpv0MDiyMDP96sIYV0FS2/8z9ICaLlOhvS4b/jC//MzC8xBG0vJeF7GQBlK0xdiUzCtsAAAAASUVORK5CYII=);
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.calendar_default_scroll_down {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAALiMAAC4jAXilP3YAAACqSURBVChTY7wpam3L9J+xmQEP+PGPKZZxP4MDi4zI78uMDIwa2NT+Z2DYovrmiC+TI8OBP/8ZmEqwGvif4e8vxr+FIDkmEKH25vBWBgbG0+iK/zEwLtF+ffwOXCGI8Y+BoRFFIdC030x/WmBiYBNhpgLdswNJ8RSYaSgmgk39z1gPUfj/29ef/9rwhQTDHRHbrbdEbLvRFcGthkkAra/9/uMvhkK8piNLAgCRpTnNn4AEmAAAAABJRU5ErkJggg==);
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.calendar_default_now {
+  background-color: var(--dp-calendar-now-indicator-color);
+  height: 2px;
+}
+
+.calendar_default_now:before {
+  content: '';
+  top: -5px;
+  border-width: 5px;
+  border-color: transparent transparent transparent var(--dp-calendar-now-indicator-color);
+  border-style: solid;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.calendar_default_shadow_top, .calendar_default_shadow_bottom {
+  box-sizing: border-box;
+  padding: 2px;
+  border: 1px solid var(--dp-calendar-border-color);
+  background: var(--color-muted);
+  pointer-events: none;
+}
+
+.calendar_default_crosshair_vertical, .calendar_default_crosshair_horizontal, .calendar_default_crosshair_left, .calendar_default_crosshair_top {
+  background-color: var(--color-primary);
+  opacity: 0.1;
+}
+
+.calendar_default_loading {
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+}
+
+.calendar_default_scroll {
+  background-color: var(--dp-calendar-scroll-bg-color);
+}
+
+.calendar_default_event_moving_source {
+  opacity: 0.5;
+}
+
+/* ============================================
+   Custom Enhancements for shadcn-vue Integration
+   ============================================ */
+
+/* Better typography for event text */
+.calendar_default_event_inner {
+  font-family: var(--text-family);
+  font-weight: 400;
+}
+
+/* Column headers with display font */
+.calendar_default_colheader_inner {
+  font-family: var(--text-family);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* Time labels */
+.calendar_default_rowheader_inner {
+  font-family: var(--text-family);
+  font-weight: 400;
+  color: var(--color-muted-foreground);
+}
+
+/* Smooth transitions */
+.calendar_default_event {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.calendar_default_event:active {
+  transform: scale(0.98);
+}
+
+/* Selection highlight */
+.calendar_default_selected {
+  z-index: 100;
+}
+
+/* Improve readability of event text */
+.calendar_default_event_inner > div {
+  font-weight: 500;
+}
+
+/* Focus ring for accessibility */
+.calendar_default_event:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+/* Better message positioning and animation */
+.calendar_default_message {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: var(--dp-calendar-message-opacity);
+    transform: translateY(0);
+  }
+}
