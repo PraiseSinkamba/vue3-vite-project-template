@@ -1,0 +1,145 @@
+<script setup lang="ts">
+import { GalleryVerticalEnd } from 'lucide-vue-next'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { z } from 'zod'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
+import Alert from '@/components/ui/alert/Alert.vue'
+import AlertTitle from '@/components/ui/alert/AlertTitle.vue'
+import AlertDescription from '@/components/ui/alert/AlertDescription.vue'
+import { onMounted } from 'vue'
+import { supabase } from '@/lib/supabase'
+import { useRoute } from 'vue-router'
+
+const authStore = useAuthStore()
+const router = useRouter()
+const route = useRoute('/auth/admin-signin')
+const loginScema = toTypedSchema(
+  z.object({
+    email: z.string().email(),
+    password: z.string().min(6),
+  }),
+)
+
+const { handleSubmit } = useForm({
+  validationSchema: loginScema,
+})
+
+const {
+  mutate: login,
+  isLoading,
+  error,
+} = authStore.adminPasswordSigninMutation({
+  onSuccess: () => {
+    router.push(route.query.redirect as string || '/admin')
+  },
+  onError: (error) => {
+    toast.error(error.message)
+  },
+})
+const onSubmit = handleSubmit((values) => {
+  login(values)
+})
+
+onMounted(async () => {
+  const { data, error } = await supabase.auth.resend({
+    type: 'signup',
+    email: 'malumbosink@gmaill.com',
+  })
+  console.log({
+    data,
+    error,
+  })
+})
+</script>
+
+<template>
+  <div class="grid min-h-svh lg:grid-cols-2">
+    <div class="flex flex-col gap-4 p-6 md:p-10">
+      <div class="flex justify-center gap-2 md:justify-start">
+        <a href="#" class="flex items-center gap-2 font-medium">
+          <div
+            class="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground"
+          >
+            <GalleryVerticalEnd class-name="size-4" />
+          </div>
+          Perfect Finish.
+        </a>
+      </div>
+      <div class="flex flex-1 items-center justify-center">
+        <div class="w-full max-w-xs">
+          <form @submit.prevent="onSubmit" :class="cn('flex flex-col gap-6')">
+            <div class="flex flex-col items-center gap-2 text-center">
+              <h1 class="text-2xl font-bold">Login to your account</h1>
+              <p class="text-balance text-sm text-muted-foreground">
+                Enter your email below to login to your account
+              </p>
+            </div>
+            <div class="grid gap-6">
+              <div class="grid gap-2">
+                <FormField v-slot="{ componentField }" name="email">
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="email@example.com" v-bind="componentField" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+              </div>
+              <div class="grid gap-2">
+                <FormField v-slot="{ componentField }" name="password">
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="password" v-bind="componentField" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+              </div>
+              <Alert v-if="error" variant="destructive">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{{ error.message }}</AlertDescription>
+              </Alert>
+              <Button type="submit" class="w-full" :disabled="isLoading">Login</Button>
+              <!-- <div
+                class="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border"
+              >
+                <span class="relative z-10 bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+              <Button variant="outline" class="w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path
+                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+                    fill="currentColor"
+                  />
+                </svg>
+                Login with Google
+              </Button> -->
+            </div>
+            <!-- <div class="text-center text-sm">
+              Don't have an account?
+              <a href="#" class="underline underline-offset-4"> Sign up </a>
+            </div> -->
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="relative hidden bg-muted lg:block">
+      <img
+        src="https://feagkfsqcaxkjlpwtpzg.supabase.co/storage/v1/object/public/system-assets/1755468801174.jpeg"
+        alt="Image"
+        class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+      />
+    </div>
+  </div>
+</template>

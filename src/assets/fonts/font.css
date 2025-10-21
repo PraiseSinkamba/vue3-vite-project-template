@@ -1,0 +1,15 @@
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 100 900; /* variable font allows range */
+  font-display: swap;
+  src: url('@/assets/fonts/Roboto-VariableFont_wdth,wght.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Alexandria';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('@/assets/fonts/Alexandria-VariableFont_wght.woff2') format('woff2');
+}

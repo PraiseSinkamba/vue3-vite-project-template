@@ -1,0 +1,90 @@
+{
+  "booking": {
+    "title": "Randevu Oluşturun",
+    "subtitle": "Randevunuzu talep etmek için aşağıdaki adımları tamamlayın",
+    "back": "Geri",
+    "continue": "Devam",
+    "previous": "Önceki",
+    "confirm": "Onayla",
+    "confirmBooking": "Randevuyu Onayla",
+    "continueToNextStep": "Sonraki Adıma Geç",
+    "yourBooking": "Randevunuz",
+    "reviewBeforeConfirm": "Lütfen onaylamadan önce randevunuzu gözden geçirin",
+    "service": "Hizmet",
+    "baseService": "Temel Hizmet",
+    "addon": "Ek Hizmet",
+    "addons": "Ek Hizmetler",
+    "addonsSelected": "{count} ek hizmet seçildi",
+    "serviceDuration": "Hizmet Süresi",
+    "date": "Tarih",
+    "time": "Saat",
+    "total": "Toplam",
+    "estimatedPrice": "Tahmini Fiyat",
+
+    "step1": {
+      "title": "Tarih & Saat",
+      "description": "Ne zaman",
+      "selectDate": "Tarih seçin",
+      "selectTime": "Saat seçin",
+      "selectDateFirst": "Müsait saatleri görmek için lütfen önce bir tarih seçin",
+      "noSlots": "Müsait Saat Yok",
+      "noSlotsMessage": "Bu tarih için müsait saat bulunmamaktadır. Lütfen başka bir tarih seçin."
+    },
+
+    "step2": {
+      "title": "Bilgileriniz",
+      "description": "İletişim detayları",
+      "yourInformation": "Bilgileriniz",
+      "fullName": "Ad Soyad",
+      "fullNamePlaceholder": "Adınızı ve soyadınızı girin",
+      "whatsapp": "WhatsApp Numarası",
+      "whatsappHelp": "Tasarımınızı görüşmek için WhatsApp'tan sizinle iletişime geçeceğiz",
+      "phone": "Telefon Numarası",
+      "email": "E-posta",
+      "emailPlaceholder": "ornek@email.com",
+      "optional": "Opsiyonel",
+      "designInspiration": "Tasarım İlhamı",
+      "inspirationHelp": "İstediğiniz tırnak tasarımının fotoğrafını yükleyin (opsiyonel)",
+      "uploadImage": "İlham fotoğrafı yüklemek için tıklayın",
+      "imageTypes": "PNG, JPG veya JPEG (Maks 5MB)",
+      "remove": "Kaldır",
+      "invalidImageType": "Lütfen geçerli bir görsel dosyası yükleyin (PNG, JPG veya JPEG)",
+      "imageTooLarge": "Görsel çok büyük. Maksimum boyut 5MB'dir",
+      "specialRequests": "Özel İstekler",
+      "specialRequestsPlaceholder": "Özel tercihler veya gereksinimler..."
+    },
+
+    "step3": {
+      "title": "Gözden Geçir & Onayla",
+      "description": "Son kontrol",
+      "importantNotice": "Önemli Bilgilendirme",
+      "pendingMessage": "Randevunuz onay bekliyor. Melody, tasarımınızı görüşmek ve son detayları onaylamak için WhatsApp üzerinden sizinle iletişime geçecektir.",
+      "serviceDetails": "Hizmet Detayları",
+      "appointmentDetails": "Randevu Detayları",
+      "yourInformation": "Bilgileriniz",
+      "whatsNext": "Sırada Ne Var?",
+      "whatsNextStep1": "Melody 24 saat içinde WhatsApp'tan sizinle iletişime geçecek",
+      "whatsNextStep2": "Tasarım tercihlerinizi ve değişiklikleri görüşeceksiniz",
+      "whatsNextStep3": "Nihai fiyat ve randevunuz onaylanacak"
+    },
+
+    "confirmation": {
+      "success": "Randevu Gönderildi!",
+      "successMessage": "Randevu talebiniz başarıyla alındı.",
+      "reference": "Randevu Referans Numarası",
+      "step1": "Melody 24 saat içinde WhatsApp'tan sizinle iletişime geçecek",
+      "step2": "Tasarımınızı görüşecek ve detayları onaylayacaksınız",
+      "step3": "Randevunuz onaylanacak",
+      "contactWhatsApp": "WhatsApp'tan İletişime Geç",
+      "backHome": "Ana Sayfaya Dön",
+      "saveReference": "Lütfen gelecekteki iletişim için referans numaranızı saklayın",
+      "whatsappMessage": "Merhaba! Az önce bir randevu oluşturdum (Referans: {number}). Detayları görüşmeyi dört gözle bekliyorum!"
+    },
+
+    "error": {
+      "serviceNotFound": "Hizmet Bulunamadı",
+      "serviceNotFoundMessage": "Rezervasyon yapmaya çalıştığınız hizmet bulunamadı.",
+      "submitFailed": "Randevu gönderilemedi. Lütfen tekrar deneyin."
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "booking": {
+    "title": "Book Your Appointment",
+    "subtitle": "Complete the steps below to request your appointment",
+    "back": "Back",
+    "continue": "Continue",
+    "previous": "Previous",
+    "confirm": "Confirm",
+    "confirmBooking": "Confirm Booking",
+    "continueToNextStep": "Continue to Next Step",
+    "yourBooking": "Your Booking",
+    "reviewBeforeConfirm": "Please review your booking before confirming",
+    "service": "Service",
+    "baseService": "Base Service",
+    "addon": "Add-on",
+    "addons": "Add-ons",
+    "addonsSelected": "{count} add-on selected | {count} add-ons selected",
+    "serviceDuration": "Service Duration",
+    "date": "Date",
+    "time": "Time",
+    "total": "Total",
+    "estimatedPrice": "Estimated Price",
+
+    "step1": {
+      "title": "Date & Time",
+      "description": "Choose when",
+      "selectDate": "Select a date",
+      "selectTime": "Select a time",
+      "selectDateFirst": "Please select a date first to see available time slots",
+      "noSlots": "No Available Slots",
+      "noSlotsMessage": "There are no available time slots for this date. Please select another date."
+    },
+
+    "step2": {
+      "title": "Your Information",
+      "description": "Contact details",
+      "yourInformation": "Your Information",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Enter your full name",
+      "whatsapp": "WhatsApp Number",
+      "whatsappHelp": "We'll contact you on WhatsApp to discuss your design",
+      "phone": "Phone Number",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "optional": "Optional",
+      "designInspiration": "Design Inspiration",
+      "inspirationHelp": "Upload a photo of your desired nail design (optional)",
+      "uploadImage": "Click to upload inspiration image",
+      "imageTypes": "PNG, JPG, or JPEG (Max 5MB)",
+      "remove": "Remove",
+      "invalidImageType": "Please upload a valid image file (PNG, JPG, or JPEG)",
+      "imageTooLarge": "Image is too large. Maximum size is 5MB",
+      "specialRequests": "Special Requests",
+      "specialRequestsPlaceholder": "Any special preferences or requirements..."
+    },
+
+    "step3": {
+      "title": "Review & Confirm",
+      "description": "Final review",
+      "importantNotice": "Important Notice",
+      "pendingMessage": "Your appointment is pending confirmation. Melody will contact you via WhatsApp to discuss your design and confirm the final details.",
+      "serviceDetails": "Service Details",
+      "appointmentDetails": "Appointment Details",
+      "yourInformation": "Your Information",
+      "whatsNext": "What's Next?",
+      "whatsNextStep1": "Melody will contact you on WhatsApp within 24 hours",
+      "whatsNextStep2": "Discuss your design preferences and any modifications",
+      "whatsNextStep3": "Confirm final price and booking"
+    },
+
+    "confirmation": {
+      "success": "Booking Submitted!",
+      "successMessage": "Your appointment request has been received successfully.",
+      "reference": "Appointment Reference",
+      "step1": "Melody will contact you on WhatsApp within 24 hours",
+      "step2": "You'll discuss your design and confirm details",
+      "step3": "Your appointment will be confirmed",
+      "contactWhatsApp": "Contact on WhatsApp",
+      "backHome": "Back to Home",
+      "saveReference": "Please save your reference number for future communication",
+      "whatsappMessage": "Hi! I just booked an appointment (Reference: {number}). Looking forward to discussing the details!"
+    },
+
+    "error": {
+      "serviceNotFound": "Service Not Found",
+      "serviceNotFoundMessage": "The service you're trying to book could not be found.",
+      "submitFailed": "Failed to submit booking. Please try again."
+    }
+  }
+}
