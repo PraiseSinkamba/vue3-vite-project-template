@@ -10,13 +10,18 @@ const router = createRouter({
     }
     return savedPosition ?? { top: 0 }
   },
-})
-// router.beforeEach((to, from) => {
-//   const auth = useAuthStore()
-//   if(to.path.startsWith("/admin")){
-
-//   }
-// })
+})/*
+router.beforeEach((to, from, next) => {
+  if (to.path.startsWith('/admin')) {
+    const auth = useAuthStore()
+    if (!auth.isAuthenticated()) {
+      return next('/auth/admin-signin?redirect=' + to.path)
+    }
+    if (auth.isClient) {
+      return next('/')
+    }
+  }
+})*/
 if (import.meta.hot) {
   handleHotUpdate(router)
 }

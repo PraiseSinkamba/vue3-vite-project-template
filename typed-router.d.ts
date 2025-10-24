@@ -87,7 +87,7 @@ declare module 'vue-router/auto-routes' {
       views: never
     }
     'src/pages/admin.vue': {
-      routes: '/admin' | '/admin/' | '/admin/appointments/(appointments)' | '/admin/clients/(client-manager)' | '/admin/file-demo/' | '/admin/gallery/(gallery)' | '/admin/inventory/(inventory-manager)' | '/admin/reports/(reports)' | '/admin/services/(services)' | '/admin/settings/(settings)' | '/admin/clients/[id]' | '/admin/inventory/[id]' | '/admin/services/[id]' | '/admin/file-demo/advanced' | '/admin/appointments' | '/admin/clients' | '/admin/inventory/[id]/edit' | '/admin/services/[id]/edit' | '/admin/file-demo' | '/admin/gallery' | '/admin/inventory' | '/admin/inventory/new' | '/admin/services/new' | '/admin/reports' | '/admin/services' | '/admin/settings' | '/admin/inventory/[id]/view'
+      routes: '/admin' | '/admin/' | '/admin/appointments/(appointments)' | '/admin/clients/(client-manager)' | '/admin/file-demo/' | '/admin/gallery/(gallery)' | '/admin/services/(services)' | '/admin/inventory/(inventory-manager)' | '/admin/reports/(reports)' | '/admin/settings/(settings)' | '/admin/clients/[id]' | '/admin/services/[id]' | '/admin/inventory/[id]' | '/admin/file-demo/advanced' | '/admin/appointments' | '/admin/clients' | '/admin/services/[id]/edit' | '/admin/inventory/[id]/edit' | '/admin/file-demo' | '/admin/gallery' | '/admin/inventory' | '/admin/services/new' | '/admin/inventory/new' | '/admin/reports' | '/admin/services' | '/admin/settings' | '/admin/inventory/[id]/view'
       views: 'default'
     }
     'src/pages/admin/index.vue': {

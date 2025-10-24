@@ -1,19 +1,15 @@
 // DatePicker.vue
 <template>
   <div class="date-picker">
-    <Popover v-model:open="isOpen">
+    <!-- Desktop: Popover -->
+    <Popover v-model:open="isOpen" v-if="!isMobile">
       <PopoverTrigger as-child>
-        <Button
-          variant="outline"
-          :class="cn(
-            'w-full justify-start text-left font-normal',
-            !modelValue && 'text-muted-foreground',
-            disabled && 'opacity-50 cursor-not-allowed',
-            error && 'border-red-500 focus:ring-red-500'
-          )"
-          :disabled="disabled"
-          @click="handleTriggerClick"
-        >
+        <Button variant="outline" :class="cn(
+          'w-full justify-start text-left font-normal',
+          !modelValue && 'text-muted-foreground',
+          disabled && 'opacity-50 cursor-not-allowed',
+          error && 'border-red-500 focus:ring-red-500'
+        )" :disabled="disabled" @click="handleTriggerClick">
           <CalendarIcon class="mr-2 h-4 w-4" />
           {{ displayValue }}
         </Button>
@@ -22,12 +18,7 @@
         <div class="p-3">
           <!-- Year/Month selector -->
           <div class="flex items-center justify-between mb-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              @click="navigateMonth(-1)"
-              :disabled="isMinDateReached"
-            >
+            <Button variant="ghost" size="sm" @click="navigateMonth(-1)" :disabled="isMinDateReached">
               <ChevronLeft class="h-4 w-4" />
             </Button>
 
@@ -37,11 +28,7 @@
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem
-                    v-for="(month, index) in months"
-                    :key="index"
-                    :value="index.toString()"
-                  >
+                  <SelectItem v-for="(month, index) in months" :key="index" :value="index.toString()">
                     {{ month }}
                   </SelectItem>
                 </SelectContent>
@@ -52,23 +39,14 @@
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem
-                    v-for="year in availableYears"
-                    :key="year"
-                    :value="year.toString()"
-                  >
+                  <SelectItem v-for="year in availableYears" :key="year" :value="year.toString()">
                     {{ year }}
                   </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              @click="navigateMonth(1)"
-              :disabled="isMaxDateReached"
-            >
+            <Button variant="ghost" size="sm" @click="navigateMonth(1)" :disabled="isMaxDateReached">
               <ChevronRight class="h-4 w-4" />
             </Button>
           </div>
@@ -76,53 +54,29 @@
           <!-- Calendar grid -->
           <div class="grid grid-cols-7 gap-1 mb-4">
             <!-- Day headers -->
-            <div
-              v-for="day in orderedDayHeaders"
-              :key="day"
-              class="text-center text-sm font-medium text-muted-foreground p-2"
-            >
+            <div v-for="day in orderedDayHeaders" :key="day"
+              class="text-center text-sm font-medium text-muted-foreground p-2">
               {{ day }}
             </div>
 
             <!-- Calendar days -->
-            <Button
-              v-for="day in calendarDays"
-              :key="`${day.date}-${day.isCurrentMonth}`"
-              variant="ghost"
-              size="sm"
-              :class="getDayButtonClass(day)"
-              :disabled="isDayDisabled(day)"
-              @click="selectDate(day)"
-            >
+            <Button v-for="day in calendarDays" :key="`${day.date}-${day.isCurrentMonth}`" variant="ghost" size="sm"
+              :class="getDayButtonClass(day)" :disabled="isDayDisabled(day)" @click="selectDate(day)">
               {{ day.day }}
             </Button>
           </div>
 
           <!-- Action buttons -->
           <div class="flex justify-between items-center pt-2 border-t">
-            <Button
-              variant="ghost"
-              size="sm"
-              @click="selectToday"
-              :disabled="isTodayDisabled"
-            >
+            <Button variant="ghost" size="sm" @click="selectToday" :disabled="isTodayDisabled">
               {{ getTodayButtonText() }}
             </Button>
 
             <div class="flex space-x-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                @click="clear"
-                v-if="clearable && modelValue"
-              >
+              <Button variant="ghost" size="sm" @click="clear" v-if="clearable && modelValue">
                 {{ getClearButtonText() }}
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                @click="isOpen = false"
-              >
+              <Button variant="ghost" size="sm" @click="isOpen = false">
                 {{ getCancelButtonText() }}
               </Button>
             </div>
@@ -130,6 +84,93 @@
         </div>
       </PopoverContent>
     </Popover>
+
+    <!-- Mobile: Drawer -->
+    <Drawer v-model:open="isOpen" v-else>
+      <DrawerTrigger as-child>
+        <Button variant="outline" :class="cn(
+          'w-full justify-start text-left font-normal',
+          !modelValue && 'text-muted-foreground',
+          disabled && 'opacity-50 cursor-not-allowed',
+          error && 'border-red-500 focus:ring-red-500'
+        )" :disabled="disabled" @click="handleTriggerClick">
+          <CalendarIcon class="mr-2 h-4 w-4" />
+          {{ displayValue }}
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader class="text-left">
+          <DrawerTitle>{{ placeholder }}</DrawerTitle>
+        </DrawerHeader>
+        <div class="p-4 pb-8">
+          <!-- Year/Month selector -->
+          <div class="flex items-center justify-between mb-4">
+            <Button variant="ghost" size="sm" @click="navigateMonth(-1)" :disabled="isMinDateReached">
+              <ChevronLeft class="h-4 w-4" />
+            </Button>
+
+            <div class="flex items-center space-x-2">
+              <Select v-model="selectedMonth">
+                <SelectTrigger class="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="(month, index) in months" :key="index" :value="index.toString()">
+                    {{ month }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select v-model="selectedYear">
+                <SelectTrigger class="w-20">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="year in availableYears" :key="year" :value="year.toString()">
+                    {{ year }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button variant="ghost" size="sm" @click="navigateMonth(1)" :disabled="isMaxDateReached">
+              <ChevronRight class="h-4 w-4" />
+            </Button>
+          </div>
+
+          <!-- Calendar grid -->
+          <div class="grid grid-cols-7 gap-1 mb-4">
+            <!-- Day headers -->
+            <div v-for="day in orderedDayHeaders" :key="day"
+              class="text-center text-sm font-medium text-muted-foreground p-2">
+              {{ day }}
+            </div>
+
+            <!-- Calendar days -->
+            <Button v-for="day in calendarDays" :key="`${day.date}-${day.isCurrentMonth}`" variant="ghost" size="sm"
+              :class="getDayButtonClass(day)" :disabled="isDayDisabled(day)" @click="selectDate(day)">
+              {{ day.day }}
+            </Button>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="flex justify-between items-center pt-2 border-t">
+            <Button variant="ghost" size="sm" @click="selectToday" :disabled="isTodayDisabled">
+              {{ getTodayButtonText() }}
+            </Button>
+
+            <div class="flex space-x-2">
+              <Button variant="ghost" size="sm" @click="clear" v-if="clearable && modelValue">
+                {{ getClearButtonText() }}
+              </Button>
+              <Button variant="ghost" size="sm" @click="isOpen = false">
+                {{ getCancelButtonText() }}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </DrawerContent>
+    </Drawer>
 
     <!-- Error message -->
     <div v-if="error" class="text-sm text-red-500 mt-1">
@@ -142,9 +183,11 @@
 import { computed, ref, watch, onMounted } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
+import { useMobile } from '@/composables/useMobile'
 
 interface CalendarDay {
   date: Date
@@ -188,7 +231,7 @@ const props = withDefaults(defineProps<DatePickerProps>(), {
   errorMessage: '',
   yearRange: 10,
   locale: 'en-US',
-  timeZone: 'UTC'
+  timeZone: undefined // Use local timezone by default
 })
 
 const emit = defineEmits<DatePickerEmits>()
@@ -199,22 +242,23 @@ const currentDate = ref(new Date())
 const selectedMonth = ref(currentDate.value.getMonth().toString())
 const selectedYear = ref(currentDate.value.getFullYear().toString())
 
+// Use mobile detection composable
+const { isMobile } = useMobile()
+
 // Locale-aware utilities
 const getLocaleInfo = () => {
   try {
     return {
-      localLocale: props.locale || navigator.language || 'en-US',
-      localTimeZone: props.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone
+      localLocale: props.locale || navigator.language || 'en-US'
     }
   } catch {
     return {
-      localLocale: 'en-US',
-      localTimeZone: 'UTC'
+      localLocale: 'en-US'
     }
   }
 }
 
-const {localLocale, localTimeZone } = getLocaleInfo()
+const { localLocale } = getLocaleInfo()
 
 // Get localized month names
 const getMonthNames = () => {
@@ -222,8 +266,7 @@ const getMonthNames = () => {
   for (let i = 0; i < 12; i++) {
     const date = new Date(2000, i, 1)
     months.push(new Intl.DateTimeFormat(localLocale, {
-      month: 'long',
-      timeZone: localTimeZone
+      month: 'long'
     }).format(date))
   }
   return months
@@ -231,15 +274,14 @@ const getMonthNames = () => {
 
 // Get localized day names
 const getDayNames = () => {
-  const days:string[] = []
+  const days: string[] = []
   const baseDate = new Date(2000, 0, 2) // Sunday
 
   for (let i = 0; i < 7; i++) {
     const date = new Date(baseDate)
     date.setDate(baseDate.getDate() + i)
     days.push(new Intl.DateTimeFormat(localLocale, {
-      weekday: 'narrow',
-      timeZone: localTimeZone
+      weekday: 'narrow'
     }).format(date))
   }
   return days
@@ -276,7 +318,7 @@ const orderedDayHeaders = computed(() => {
 // Computed properties
 const displayValue = computed<string>(() => {
   if (!props.modelValue) return props.placeholder
-  return formatDate(props.modelValue, props.format)
+  return formatDate(typeof props.modelValue === 'string'?new Date():props.modelValue, props.format)
 })
 
 const currentMonth = computed<number>(() => parseInt(selectedMonth.value))
@@ -287,7 +329,7 @@ const availableYears = computed<number[]>(() => {
   const startYear = currentYear - props.yearRange
   const endYear = currentYear + props.yearRange
 
-  const years:number[] = []
+  const years: number[] = []
   for (let year = startYear; year <= endYear; year++) {
     years.push(year)
   }
@@ -358,10 +400,8 @@ const formatDate = (date: Date, format: string): string => {
     }
 
     if (formatOptions[format]) {
-      return new Intl.DateTimeFormat(localLocale, {
-        ...formatOptions[format],
-        timeZone: localTimeZone
-      }).format(date)
+      // Don't specify timezone - use local date formatting
+      return new Intl.DateTimeFormat(localLocale, formatOptions[format]).format(date)
     }
 
     // Handle custom format patterns
@@ -384,8 +424,7 @@ const formatDate = (date: Date, format: string): string => {
       const parts = new Intl.DateTimeFormat(localLocale, {
         year: 'numeric',
         month: 'short',
-        day: '2-digit',
-        timeZone: localTimeZone
+        day: '2-digit'
       }).formatToParts(date)
 
       const partMap = parts.reduce((acc, part) => {
@@ -406,12 +445,12 @@ const formatDate = (date: Date, format: string): string => {
 
     // Fallback to medium format
     return new Intl.DateTimeFormat(localLocale, {
-      dateStyle: 'medium',
-      timeZone: localTimeZone
+      dateStyle: 'medium'
     }).format(date)
 
   } catch (error) {
     // Fallback to basic format if Intl fails
+    console.debug(date)
     return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
   }
 }
@@ -467,13 +506,18 @@ const navigateMonth = (direction: number): void => {
 const selectDate = (day: CalendarDay): void => {
   if (isDayDisabled(day)) return
 
-  emit('update:modelValue', day.date)
-  emit('change', day.date)
+  // Create date at noon to avoid timezone boundary issues
+  const selectedDate = new Date(day.date.getFullYear(), day.date.getMonth(), day.date.getDate(), 12, 0, 0, 0)
+
+  emit('update:modelValue', selectedDate)
+  emit('change', selectedDate)
   isOpen.value = false
 }
 
 const selectToday = (): void => {
-  const today = new Date()
+  const now = new Date()
+  // Create date at noon to avoid timezone boundary issues
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0, 0)
   if (!isTodayDisabled.value) {
     emit('update:modelValue', today)
     emit('change', today)
@@ -508,7 +552,7 @@ const getClearButtonText = (): string => {
   // Simple localization for common button text
   const clearText: Record<string, string> = {
     'en': 'Clear',
-    'tr':'Temizle',
+    'tr': 'Temizle',
     'es': 'Limpiar',
     'fr': 'Effacer',
     'de': 'Löschen',
@@ -528,7 +572,7 @@ const getCancelButtonText = (): string => {
   // Simple localization for common button text
   const cancelText: Record<string, string> = {
     'en': 'Cancel',
-    'tr':'Iptal',
+    'tr': 'Iptal',
     'es': 'Cancelar',
     'fr': 'Annuler',
     'de': 'Abbrechen',
@@ -561,6 +605,7 @@ watch(isOpen, (newValue) => {
 
 // Initialize
 onMounted(() => {
+  // Initialize date from modelValue
   if (props.modelValue) {
     selectedMonth.value = props.modelValue.getMonth().toString()
     selectedYear.value = props.modelValue.getFullYear().toString()

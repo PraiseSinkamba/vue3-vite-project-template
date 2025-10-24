@@ -85,3 +85,19 @@ export type MutationOptions<TData, TVariables, TError = Error> = Omit<
   UseMutationOptions<TData, TVariables, TError>,
   'mutation'
 >
+
+// RPC Function Types
+export interface TimeSlot {
+  time_slot: string
+  is_available: boolean
+  reason: string | null
+}
+
+export interface GetTimeSlotsForDayArgs {
+  p_date: string
+  p_technician_id: string
+  p_service_duration_minutes?: number
+  p_slot_interval_minutes?: number
+}
+
+export type GetTimeSlotsForDayReturn = TimeSlot[]

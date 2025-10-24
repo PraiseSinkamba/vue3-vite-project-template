@@ -165,7 +165,7 @@ export const useServiceStore = defineStore('services', {
     },
 
     // Client-side: Fetch service with all related data (images, addons, category)
-    fetchServiceDetailById(id: MaybeRefOrGetter<string>) {
+    fetchServiceDetailById(id: MaybeRefOrGetter<string|null>) {
       return useQuery({
         key: () => ['client', 'service-detail', toValue(id)],
         query: async () => {
@@ -182,7 +182,7 @@ export const useServiceStore = defineStore('services', {
                 *
               )
             `)
-            .eq('id', toValue(id))
+            .eq('id', toValue(id) as string)
             .eq('is_active', true)
             .single()
 
@@ -197,6 +197,7 @@ export const useServiceStore = defineStore('services', {
 
           return data as Service
         },
+        enabled: !!toValue(id),
         staleTime: 300_000, // 5 minutes
       })
     },

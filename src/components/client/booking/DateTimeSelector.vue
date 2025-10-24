@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { syncRef } from '@vueuse/core'
@@ -23,8 +23,8 @@ const bookingStore = useBookingStore()
 const { selectedDate, selectedTime } = storeToRefs(bookingStore)
 
 // Local state for date picker (synced with store)
-const localDate = ref<Date | null>(selectedDate.value)
 const today = startOfToday()
+const localDate = ref<Date | null>(addDays(today, 1))
 
 // Sync local date with store date using VueUse
 syncRef(localDate, selectedDate, { direction: 'both' })
@@ -33,9 +33,10 @@ syncRef(localDate, selectedDate, { direction: 'both' })
 const totalDuration = computed(() => {
   return bookingStore.totalDuration(props.service, props.addons)
 })
-
+console.log('DateTimeSelector')
 // Fetch available slots for selected date
 const availableSlotsQuery = bookingStore.useAvailableSlots(localDate, totalDuration)
+console.log('DateTimeSelector init')
 
 // Select a time slot
 const selectTimeSlot = (time: string) => {
@@ -100,6 +101,9 @@ const getGroupLabel = (group: string) => {
 
   return labels[group]?.[locale.value] || group
 }
+onMounted(() => {
+  availableSlotsQuery.refresh(true)
+})
 </script>
 
 <template>
@@ -111,14 +115,8 @@ const getGroupLabel = (group: string) => {
         {{ t('booking.step1.selectDate') }}
       </label>
 
-      <DatePicker
-        v-model="localDate"
-        :min-date="today"
-        :max-date="addDays(today, 30)"
-        :locale="locale"
-        :placeholder="t('booking.step1.selectDate')"
-        class="w-full"
-      />
+      <DatePicker v-model="localDate" :min-date="today" :max-date="addDays(today, 30)" :locale="locale"
+        :placeholder="t('booking.step1.selectDate')" class="w-full" />
 
       <p v-if="totalDuration" class="text-sm text-muted-foreground mt-2">
         {{ t('booking.serviceDuration') }}: {{ Math.floor(totalDuration / 60) }}h
@@ -133,16 +131,10 @@ const getGroupLabel = (group: string) => {
         {{ t('booking.step1.selectTime') }}
       </label>
 
-      <ConditionalContent
-        :is-loading="availableSlotsQuery.isLoading.value"
-        :has-error="availableSlotsQuery.status.value === 'error'"
-        :error="availableSlotsQuery.error.value"
-        :retry="availableSlotsQuery.refresh"
-        :is-empty="!hasSlots"
-        :empty-title="t('booking.step1.noSlots')"
-        :empty-message="t('booking.step1.noSlotsMessage')"
-        empty-icon="calendar"
-      >
+      <ConditionalContent :is-loading="availableSlotsQuery.isLoading.value"
+        :has-error="availableSlotsQuery.status.value === 'error'" :error="availableSlotsQuery.error.value"
+        :retry="availableSlotsQuery.refresh" :is-empty="!hasSlots" :empty-title="t('booking.step1.noSlots')"
+        :empty-message="t('booking.step1.noSlotsMessage')" empty-icon="calendar">
         <div class="space-y-6">
           <!-- Morning Slots -->
           <div v-if="groupedSlots.morning && groupedSlots.morning.length > 0">
@@ -150,17 +142,9 @@ const getGroupLabel = (group: string) => {
               {{ getGroupLabel('morning') }}
             </div>
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-              <Button
-                v-for="time in groupedSlots.morning"
-                :key="time"
-                variant="outline"
-                size="sm"
-                :class="{
-                  'bg-primary text-primary-foreground hover:bg-primary/90':
-                    selectedTime === time,
-                }"
-                @click="selectTimeSlot(time)"
-              >
+              <Button v-for="time in groupedSlots.morning" :key="time" variant="outline" size="sm" :class="{
+                'bg-primary text-primary-foreground hover:bg-primary/90': selectedTime === time,
+              }" @click="selectTimeSlot(time)">
                 {{ formatTime(time) }}
               </Button>
             </div>
@@ -172,17 +156,9 @@ const getGroupLabel = (group: string) => {
               {{ getGroupLabel('afternoon') }}
             </div>
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-              <Button
-                v-for="time in groupedSlots.afternoon"
-                :key="time"
-                variant="outline"
-                size="sm"
-                :class="{
-                  'bg-primary text-primary-foreground hover:bg-primary/90':
-                    selectedTime === time,
-                }"
-                @click="selectTimeSlot(time)"
-              >
+              <Button v-for="time in groupedSlots.afternoon" :key="time" variant="outline" size="sm" :class="{
+                'bg-primary text-primary-foreground hover:bg-primary/90': selectedTime === time,
+              }" @click="selectTimeSlot(time)">
                 {{ formatTime(time) }}
               </Button>
             </div>
@@ -194,17 +170,9 @@ const getGroupLabel = (group: string) => {
               {{ getGroupLabel('evening') }}
             </div>
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-              <Button
-                v-for="time in groupedSlots.evening"
-                :key="time"
-                variant="outline"
-                size="sm"
-                :class="{
-                  'bg-primary text-primary-foreground hover:bg-primary/90':
-                    selectedTime === time,
-                }"
-                @click="selectTimeSlot(time)"
-              >
+              <Button v-for="time in groupedSlots.evening" :key="time" variant="outline" size="sm" :class="{
+                'bg-primary text-primary-foreground hover:bg-primary/90': selectedTime === time,
+              }" @click="selectTimeSlot(time)">
                 {{ formatTime(time) }}
               </Button>
             </div>
@@ -214,10 +182,7 @@ const getGroupLabel = (group: string) => {
     </div>
 
     <!-- Instruction text when no date selected -->
-    <div
-      v-else
-      class="flex items-center justify-center p-8 border-2 border-dashed rounded-lg text-muted-foreground"
-    >
+    <div v-else class="flex items-center justify-center p-8 border-2 border-dashed rounded-lg text-muted-foreground">
       <div class="text-center">
         <CalendarIcon class="w-12 h-12 mx-auto mb-3 opacity-50" />
         <p class="text-sm">{{ t('booking.step1.selectDateFirst') }}</p>

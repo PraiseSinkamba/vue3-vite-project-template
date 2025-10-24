@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useBookingStore } from '@/stores/booking'
+import { useAuthStore } from '@/stores/auth'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
@@ -16,11 +17,17 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { User, Phone, Mail, MessageSquare, Upload, X, Image as ImageIcon } from 'lucide-vue-next'
+import { User, Phone, Mail, MessageSquare, Upload, X, Image as ImageIcon, Sparkles } from 'lucide-vue-next'
+import { Card, CardContent } from '@/components/ui/card'
 
 const { t, locale } = useI18n()
 const bookingStore = useBookingStore()
+const authStore = useAuthStore()
 const { clientInfo } = storeToRefs(bookingStore)
+const { user } = storeToRefs(authStore)
+
+// Check if user is authenticated
+const isAuthenticated = computed(() => !!user.value)
 
 // Form validation schema
 const formSchema = toTypedSchema(
@@ -46,7 +53,7 @@ const formSchema = toTypedSchema(
   }),
 )
 
-const { handleSubmit, isFieldDirty, values, setFieldValue } = useForm({
+const { handleSubmit, isFieldDirty, values, setFieldValue, setValues } = useForm({
   validationSchema: formSchema,
   initialValues: {
     client_name: clientInfo.value.client_name || '',
@@ -55,6 +62,28 @@ const { handleSubmit, isFieldDirty, values, setFieldValue } = useForm({
     client_email: clientInfo.value.client_email || '',
     special_requests: clientInfo.value.special_requests || '',
   },
+})
+
+// Auto-fill from authenticated user on mount
+onMounted(() => {
+  if (isAuthenticated.value && user.value?.profile) {
+    // Check if form is empty before auto-filling
+    const isFormEmpty = !clientInfo.value.client_name && !clientInfo.value.client_phone
+
+    if (isFormEmpty) {
+      // Auto-fill from profile
+      bookingStore.autoFillFromProfile(user.value.profile)
+
+      // Update form values
+      setValues({
+        client_name: user.value.profile.full_name || '',
+        client_phone: user.value.profile.phone || '',
+        client_whatsapp: user.value.profile.phone || '',
+        client_email: user.value.profile.email || '',
+        special_requests: '',
+      })
+    }
+  }
 })
 
 // Image upload state
@@ -145,22 +174,34 @@ const autoFillPhone = () => {
 
 <template>
   <form @submit="onSubmit" class="space-y-6">
+    <!-- Authenticated User Banner -->
+    <Card v-if="isAuthenticated" class="border-primary/50 bg-primary/5">
+      <CardContent class="p-4">
+        <div class="flex items-center gap-2">
+          <Sparkles class="w-4 h-4 text-primary flex-shrink-0" />
+          <p class="text-sm text-muted-foreground">
+            {{ t('booking.step2.authGateway.earningPoints') }}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+
     <!-- Client Information Section -->
     <div class="space-y-4">
       <h3 class="font-serif text-lg font-semibold text-foreground">
-        {{ t('booking.step2.yourInformation') }}
+        {{ t('booking.step3.yourInformation') }}
       </h3>
 
       <!-- Full Name -->
       <FormField v-slot="{ componentField }" name="client_name" :validate-on-blur="!isFieldDirty">
         <FormItem>
-          <FormLabel>{{ t('booking.step2.fullName') }} *</FormLabel>
+          <FormLabel>{{ t('booking.step3.fullName') }} *</FormLabel>
           <FormControl>
             <div class="relative">
               <User class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 type="text"
-                :placeholder="t('booking.step2.fullNamePlaceholder')"
+                :placeholder="t('booking.step3.fullNamePlaceholder')"
                 class="pl-10"
                 v-bind="componentField"
                 @blur="saveToStore"
@@ -178,7 +219,7 @@ const autoFillPhone = () => {
         :validate-on-blur="!isFieldDirty"
       >
         <FormItem>
-          <FormLabel>{{ t('booking.step2.whatsapp') }} *</FormLabel>
+          <FormLabel>{{ t('booking.step3.whatsapp') }} *</FormLabel>
           <FormControl>
             <div class="relative">
               <MessageSquare class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -192,7 +233,7 @@ const autoFillPhone = () => {
             </div>
           </FormControl>
           <p class="text-xs text-muted-foreground mt-1">
-            {{ t('booking.step2.whatsappHelp') }}
+            {{ t('booking.step3.whatsappHelp') }}
           </p>
           <FormMessage />
         </FormItem>
@@ -201,7 +242,7 @@ const autoFillPhone = () => {
       <!-- Phone Number -->
       <FormField v-slot="{ componentField }" name="client_phone" :validate-on-blur="!isFieldDirty">
         <FormItem>
-          <FormLabel>{{ t('booking.step2.phone') }} *</FormLabel>
+          <FormLabel>{{ t('booking.step3.phone') }} *</FormLabel>
           <FormControl>
             <div class="relative">
               <Phone class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -221,13 +262,13 @@ const autoFillPhone = () => {
       <!-- Email (Optional) -->
       <FormField v-slot="{ componentField }" name="client_email" :validate-on-blur="!isFieldDirty">
         <FormItem>
-          <FormLabel>{{ t('booking.step2.email') }} ({{ t('booking.step2.optional') }})</FormLabel>
+          <FormLabel>{{ t('booking.step3.email') }} ({{ t('booking.step3.optional') }})</FormLabel>
           <FormControl>
             <div class="relative">
               <Mail class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 type="email"
-                :placeholder="t('booking.step2.emailPlaceholder')"
+                :placeholder="t('booking.step3.emailPlaceholder')"
                 class="pl-10"
                 v-bind="componentField"
                 @blur="saveToStore"
@@ -242,12 +283,12 @@ const autoFillPhone = () => {
     <!-- Inspiration Image Section -->
     <div class="space-y-4 pt-4 border-t">
       <h3 class="font-serif text-lg font-semibold text-foreground">
-        {{ t('booking.step2.designInspiration') }}
+        {{ t('booking.step3.designInspiration') }}
       </h3>
 
       <div class="space-y-3">
         <p class="text-sm text-muted-foreground">
-          {{ t('booking.step2.inspirationHelp') }}
+          {{ t('booking.step3.inspirationHelp') }}
         </p>
 
         <!-- Image Upload Area -->
@@ -258,10 +299,10 @@ const autoFillPhone = () => {
         >
           <Upload class="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
           <p class="text-sm font-medium text-foreground mb-1">
-            {{ t('booking.step2.uploadImage') }}
+            {{ t('booking.step3.uploadImage') }}
           </p>
           <p class="text-xs text-muted-foreground">
-            {{ t('booking.step2.imageTypes') }}
+            {{ t('booking.step3.imageTypes') }}
           </p>
         </div>
 
@@ -276,7 +317,7 @@ const autoFillPhone = () => {
             type="button"
           >
             <X class="w-4 h-4 mr-1" />
-            {{ t('booking.step2.remove') }}
+            {{ t('booking.step3.remove') }}
           </Button>
         </div>
 
@@ -300,11 +341,11 @@ const autoFillPhone = () => {
       >
         <FormItem>
           <FormLabel>
-            {{ t('booking.step2.specialRequests') }} ({{ t('booking.step2.optional') }})
+            {{ t('booking.step3.specialRequests') }} ({{ t('booking.step3.optional') }})
           </FormLabel>
           <FormControl>
             <Textarea
-              :placeholder="t('booking.step2.specialRequestsPlaceholder')"
+              :placeholder="t('booking.step3.specialRequestsPlaceholder')"
               rows="4"
               v-bind="componentField"
               @blur="saveToStore"

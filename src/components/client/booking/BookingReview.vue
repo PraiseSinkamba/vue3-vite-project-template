@@ -97,10 +97,10 @@ const formattedDuration = computed(() => {
         <AlertCircle class="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
         <div class="space-y-1">
           <h4 class="font-semibold text-foreground">
-            {{ t('booking.step3.importantNotice') }}
+            {{ t('booking.step4.importantNotice') }}
           </h4>
           <p class="text-sm text-muted-foreground">
-            {{ t('booking.step3.pendingMessage') }}
+            {{ t('booking.step4.pendingMessage') }}
           </p>
         </div>
       </div>
@@ -109,7 +109,7 @@ const formattedDuration = computed(() => {
     <!-- Service Details -->
     <div class="bg-card border rounded-lg p-6">
       <h3 class="font-serif text-lg font-semibold text-foreground mb-4">
-        {{ t('booking.step3.serviceDetails') }}
+        {{ t('booking.step4.serviceDetails') }}
       </h3>
 
       <div class="space-y-3">
@@ -166,7 +166,7 @@ const formattedDuration = computed(() => {
     <!-- Appointment Details -->
     <div class="bg-card border rounded-lg p-6">
       <h3 class="font-serif text-lg font-semibold text-foreground mb-4">
-        {{ t('booking.step3.appointmentDetails') }}
+        {{ t('booking.step4.appointmentDetails') }}
       </h3>
 
       <div class="space-y-3">
@@ -191,14 +191,14 @@ const formattedDuration = computed(() => {
     <!-- Client Information -->
     <div class="bg-card border rounded-lg p-6">
       <h3 class="font-serif text-lg font-semibold text-foreground mb-4">
-        {{ t('booking.step3.yourInformation') }}
+        {{ t('booking.step4.yourInformation') }}
       </h3>
 
       <div class="space-y-3">
         <div class="flex items-center gap-3">
           <User class="w-5 h-5 text-muted-foreground flex-shrink-0" />
           <div>
-            <div class="text-sm text-muted-foreground">{{ t('booking.step2.fullName') }}</div>
+            <div class="text-sm text-muted-foreground">{{ t('booking.step3.fullName') }}</div>
             <div class="font-medium text-foreground">{{ clientInfo.client_name }}</div>
           </div>
         </div>
@@ -206,7 +206,7 @@ const formattedDuration = computed(() => {
         <div class="flex items-center gap-3">
           <MessageSquare class="w-5 h-5 text-muted-foreground flex-shrink-0" />
           <div>
-            <div class="text-sm text-muted-foreground">{{ t('booking.step2.whatsapp') }}</div>
+            <div class="text-sm text-muted-foreground">{{ t('booking.step3.whatsapp') }}</div>
             <div class="font-medium text-foreground">{{ clientInfo.client_whatsapp }}</div>
           </div>
         </div>
@@ -214,7 +214,7 @@ const formattedDuration = computed(() => {
         <div class="flex items-center gap-3">
           <Phone class="w-5 h-5 text-muted-foreground flex-shrink-0" />
           <div>
-            <div class="text-sm text-muted-foreground">{{ t('booking.step2.phone') }}</div>
+            <div class="text-sm text-muted-foreground">{{ t('booking.step3.phone') }}</div>
             <div class="font-medium text-foreground">{{ clientInfo.client_phone }}</div>
           </div>
         </div>
@@ -222,7 +222,7 @@ const formattedDuration = computed(() => {
         <div v-if="clientInfo.client_email" class="flex items-center gap-3">
           <Mail class="w-5 h-5 text-muted-foreground flex-shrink-0" />
           <div>
-            <div class="text-sm text-muted-foreground">{{ t('booking.step2.email') }}</div>
+            <div class="text-sm text-muted-foreground">{{ t('booking.step3.email') }}</div>
             <div class="font-medium text-foreground">{{ clientInfo.client_email }}</div>
           </div>
         </div>
@@ -232,7 +232,7 @@ const formattedDuration = computed(() => {
           <ImageIcon class="w-5 h-5 text-muted-foreground flex-shrink-0 mt-1" />
           <div class="flex-1">
             <div class="text-sm text-muted-foreground mb-2">
-              {{ t('booking.step2.designInspiration') }}
+              {{ t('booking.step3.designInspiration') }}
             </div>
             <div class="text-sm font-medium text-foreground">
               {{ inspirationImage.name }}
@@ -246,7 +246,7 @@ const formattedDuration = computed(() => {
         <!-- Special Requests -->
         <div v-if="clientInfo.special_requests" class="pt-3 border-t">
           <div class="text-sm text-muted-foreground mb-2">
-            {{ t('booking.step2.specialRequests') }}
+            {{ t('booking.step3.specialRequests') }}
           </div>
           <div class="text-sm text-foreground bg-muted p-3 rounded-md whitespace-pre-wrap">
             {{ clientInfo.special_requests }}
@@ -258,13 +258,13 @@ const formattedDuration = computed(() => {
     <!-- What's Next Section -->
     <div class="bg-accent/50 border rounded-lg p-6">
       <h3 class="font-serif text-lg font-semibold text-foreground mb-3">
-        {{ t('booking.step3.whatsNext') }}
+        {{ t('booking.step4.whatsNext') }}
       </h3>
 
       <ol class="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
-        <li>{{ t('booking.step3.whatsNextStep1') }}</li>
-        <li>{{ t('booking.step3.whatsNextStep2') }}</li>
-        <li>{{ t('booking.step3.whatsNextStep3') }}</li>
+        <li>{{ t('booking.step4.whatsNextStep1') }}</li>
+        <li>{{ t('booking.step4.whatsNextStep2') }}</li>
+        <li>{{ t('booking.step4.whatsNextStep3') }}</li>
       </ol>
     </div>
   </div>

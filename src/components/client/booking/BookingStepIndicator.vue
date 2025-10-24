@@ -27,6 +27,11 @@ const steps = computed(() => [
     title: t('booking.step3.title'),
     description: t('booking.step3.description'),
   },
+  {
+    number: 4,
+    title: t('booking.step4.title'),
+    description: t('booking.step4.description'),
+  },
 ])
 
 const isStepCompleted = (stepNumber: number) => stepNumber < props.currentStep
@@ -41,15 +46,15 @@ const isStepCurrent = (stepNumber: number) => stepNumber === props.currentStep
         <div class="flex-1 h-2 bg-muted rounded-full overflow-hidden">
           <div
             class="h-full bg-primary transition-all duration-300"
-            :style="{ width: `${((currentStep - 1) / 2) * 100}%` }"
+            :style="{ width: `${((currentStep - 1) / 3) * 100}%` }"
           />
         </div>
         <span class="text-sm font-medium text-muted-foreground">
-          {{ currentStep }}/3
+          {{ currentStep }}/4
         </span>
       </div>
       <p class="text-sm font-medium text-foreground">
-        {{ steps[currentStep - 1].title }}
+        {{ steps[currentStep - 1]?.title }}
       </p>
     </div>
 

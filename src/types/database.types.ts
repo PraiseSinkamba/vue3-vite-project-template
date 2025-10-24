@@ -1903,10 +1903,7 @@ export type Database = {
       }
     }
     Functions: {
-      bulk_upload_past_work: {
-        Args: { work_items: Json }
-        Returns: number
-      }
+      bulk_upload_past_work: { Args: { work_items: Json }; Returns: number }
       create_image_metadata: {
         Args: {
           p_file_size?: number
@@ -1969,10 +1966,20 @@ export type Database = {
           width: number
         }[]
       }
-      is_staff_role: {
-        Args: { user_id: string }
-        Returns: boolean
+      get_time_slots_for_day: {
+        Args: {
+          p_date: string
+          p_service_duration_minutes?: number
+          p_slot_interval_minutes?: number
+          p_technician_id: string
+        }
+        Returns: {
+          is_available: boolean
+          reason: string
+          time_slot: string
+        }[]
       }
+      is_staff_role: { Args: { user_id: string }; Returns: boolean }
       link_profile_to_auth: {
         Args: { profile_id: string; user_email: string }
         Returns: boolean

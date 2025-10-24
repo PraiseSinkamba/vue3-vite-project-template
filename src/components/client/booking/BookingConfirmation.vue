@@ -140,7 +140,7 @@ const viewMyAppointments = () => {
     <!-- What's Next Section -->
     <div class="bg-accent/50 border rounded-lg p-6 mb-6">
       <h3 class="font-serif text-lg font-semibold text-foreground mb-4">
-        {{ t('booking.step3.whatsNext') }}
+        {{ t('booking.step4.whatsNext') }}
       </h3>
 
       <ol class="space-y-3 text-sm">

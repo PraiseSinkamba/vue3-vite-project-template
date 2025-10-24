@@ -32,6 +32,109 @@
     },
 
     "step2": {
+      "title": "Create Your Account",
+      "description": "Get rewarded",
+      "authGateway": {
+        "headline": "Get More from Your Nail Journey",
+        "subheadline": "Create a free account to unlock exclusive benefits with this booking",
+        "signInTab": "Sign In",
+        "signUpTab": "Create Account",
+        "guestTab": "Guest",
+        "continueAsGuest": "Continue as guest",
+        "alreadyAuthenticated": "Booking as {name}",
+        "earningPoints": "Earning loyalty points"
+      },
+      "benefits": {
+        "trackStyle": {
+          "title": "Track Your Style",
+          "description": "View past appointments and easily reorder your favorite designs"
+        },
+        "earnRewards": {
+          "title": "Earn Rewards",
+          "description": "Get points with every visit and unlock exclusive discounts"
+        },
+        "referFriends": {
+          "title": "Refer & Earn",
+          "description": "Share with friends - you both save on your next appointments"
+        },
+        "bookFaster": {
+          "title": "Book Faster",
+          "description": "Saved details mean lightning-fast future bookings"
+        },
+        "vipAccess": {
+          "title": "VIP Access",
+          "description": "Early access to new services and seasonal promotions"
+        },
+        "accountCreated": {
+          "title": "Account Created Successfully",
+          "description": "Welcome! You're now earning points with this booking"
+        }
+      },
+      "signIn": {
+        "title": "Welcome Back",
+        "subtitle": "Sign in to continue your booking",
+        "emailLabel": "Email",
+        "emailPlaceholder": "your{'@'}email.com",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "Enter your password",
+        "forgotPassword": "Forgot password?",
+        "signInButton": "Sign In",
+        "signingIn": "Signing in...",
+        "noAccount": "Don't have an account?",
+        "createAccount": "Create one",
+        "orDivider": "Or continue with",
+        "googleButton": "Continue with Google",
+        "errors": {
+          "invalidCredentials": "Invalid email or password",
+          "networkError": "Network error. Please try again",
+          "unknownError": "An error occurred. Please try again"
+        }
+      },
+      "signUp": {
+        "title": "Create Your Account",
+        "subtitle": "Join to start earning rewards with this booking",
+        "fullNameLabel": "Full Name",
+        "fullNamePlaceholder": "Enter your full name",
+        "emailLabel": "Email",
+        "emailPlaceholder": "your{'@'}email.com",
+        "phoneLabel": "Phone Number",
+        "phonePlaceholder": "+1 XXX XXX XXXX",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "Create a secure password",
+        "confirmPasswordLabel": "Confirm Password",
+        "confirmPasswordPlaceholder": "Re-enter your password",
+        "agreeTerms": "I agree to the Terms of Service and Privacy Policy",
+        "signUpButton": "Create Free Account",
+        "creatingAccount": "Creating account...",
+        "haveAccount": "Already have an account?",
+        "signIn": "Sign in",
+        "orDivider": "Or continue with",
+        "googleButton": "Sign up with Google",
+        "errors": {
+          "emailInUse": "This email is already registered",
+          "weakPassword": "Password must be at least 8 characters",
+          "passwordMismatch": "Passwords do not match",
+          "invalidPhone": "Invalid phone number format",
+          "networkError": "Network error. Please try again",
+          "unknownError": "An error occurred. Please try again"
+        },
+        "validation": {
+          "nameRequired": "Full name is required",
+          "nameTooShort": "Name must be at least 2 characters",
+          "emailRequired": "Email is required",
+          "emailInvalid": "Invalid email address",
+          "phoneRequired": "Phone number is required",
+          "phoneInvalid": "Invalid phone number format",
+          "passwordRequired": "Password is required",
+          "passwordTooShort": "Password must be at least 8 characters",
+          "confirmPasswordRequired": "Please confirm your password",
+          "passwordsMustMatch": "Passwords must match",
+          "termsRequired": "You must agree to the terms"
+        }
+      }
+    },
+
+    "step3": {
       "title": "Your Information",
       "description": "Contact details",
       "yourInformation": "Your Information",
@@ -41,7 +144,7 @@
       "whatsappHelp": "We'll contact you on WhatsApp to discuss your design",
       "phone": "Phone Number",
       "email": "Email",
-      "emailPlaceholder": "your@email.com",
+      "emailPlaceholder": "your{'@'}email.com",
       "optional": "Optional",
       "designInspiration": "Design Inspiration",
       "inspirationHelp": "Upload a photo of your desired nail design (optional)",
@@ -54,7 +157,7 @@
       "specialRequestsPlaceholder": "Any special preferences or requirements..."
     },
 
-    "step3": {
+    "step4": {
       "title": "Review & Confirm",
       "description": "Final review",
       "importantNotice": "Important Notice",

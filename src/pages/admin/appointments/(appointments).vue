@@ -1,46 +1,17 @@
 <script setup lang="ts">
 import PageHeader from '@/components/ui/page/PageHeader.vue'
 import { DayPilot, DayPilotCalendar } from '@daypilot/daypilot-lite-vue'
-import { onMounted, ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { useAppointmentsStore } from '@/stores/appointments'
+import {
+  getStatusInfo,
+  formatTime,
+  formatDuration,
+  useAppointmentTransform,
+} from '@/composables/useAppointmentCalendar'
 
 type ViewType = DayPilot.CalendarConfig['viewType']
-
-// Appointment status type matching your schema
-type AppointmentStatus =
-  | 'pending'
-  | 'confirmed'
-  | 'in_progress'
-  | 'completed'
-  | 'cancelled'
-  | 'no_show'
-
-interface CalendarEvent extends DayPilot.EventData {
-  id: string | number
-  start: string
-  end: string
-  text: string
-  resource?: string // Required for Resources view
-  backColor?: string
-  borderColor?: string
-  barColor?: string
-  cssClass?: string
-  data: {
-    appointmentNumber: string
-    clientName: string
-    clientPhone: string
-    status: AppointmentStatus
-    serviceName?: string
-    bundleName?: string
-    quotedPrice?: number
-    finalPrice?: number
-    technicianName?: string
-    specialRequests?: string
-    internalNotes?: string
-  }
-}
 
 interface Column {
   name: string
@@ -70,8 +41,11 @@ interface EventClickArgs {
   e: any
 }
 
+// Store setup
+const appointmentsStore = useAppointmentsStore()
+
+// UI state
 const selectedViewType = ref<ViewType>('Day')
-const events = ref<CalendarEvent[]>([])
 const startDate = ref<DayPilot.Date>(DayPilot.Date.today())
 const calendarRef = ref<any>(null)
 
@@ -82,188 +56,43 @@ const columns = ref<Column[]>([
   // { name: 'Maria (Assistant)', id: 'tech-2' }
 ])
 
-// Helper function to get status color and info
-const getStatusInfo = (status: AppointmentStatus) => {
-  const statusConfig = {
-    pending: {
-      back: '#FEF3C7',
-      border: '#F59E0B',
-      bar: '#F59E0B',
-      badge: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-      icon: '⏳',
-      label: 'Pending',
-    },
-    confirmed: {
-      back: '#DBEAFE',
-      border: '#3B82F6',
-      bar: '#3B82F6',
-      badge: 'bg-blue-100 text-blue-800 border-blue-300',
-      icon: '✓',
-      label: 'Confirmed',
-    },
-    in_progress: {
-      back: '#E9D5FF',
-      border: '#A855F7',
-      bar: '#A855F7',
-      badge: 'bg-purple-100 text-purple-800 border-purple-300',
-      icon: '▶',
-      label: 'In Progress',
-    },
-    completed: {
-      back: '#D1FAE5',
-      border: '#10B981',
-      bar: '#10B981',
-      badge: 'bg-green-100 text-green-800 border-green-300',
-      icon: '✓',
-      label: 'Completed',
-    },
-    cancelled: {
-      back: '#FEE2E2',
-      border: '#EF4444',
-      bar: '#EF4444',
-      badge: 'bg-red-100 text-red-800 border-red-300',
-      icon: '✕',
-      label: 'Cancelled',
-    },
-    no_show: {
-      back: '#F3F4F6',
-      border: '#6B7280',
-      bar: '#6B7280',
-      badge: 'bg-gray-100 text-gray-800 border-gray-300',
-      icon: '◯',
-      label: 'No Show',
-    },
+// Calculate date range for fetching appointments
+const dateRange = computed(() => {
+  const start = startDate.value
+  const viewType = selectedViewType.value
+
+  let endDate: DayPilot.Date
+
+  if (viewType === 'Day') {
+    endDate = start.addDays(1)
+  } else if (viewType === 'Week') {
+    endDate = start.addDays(7)
+  } else {
+    endDate = start.addDays(7) // Default to week
   }
-  return statusConfig[status] || statusConfig.pending
-}
-type DateFn = () => DayPilot.Date
-// Format time for display
-const formatTime = (valueFn: DateFn) => {
-  return valueFn().toString('h:mm tt')
-}
 
-// Format duration
-const formatDuration = (start: DateFn, end: DateFn) => {
-  const startDate = start()
-  const endDate = end()
-  const minutes = (endDate.getTime() - startDate.getTime()) / (1000 * 60)
-
-  if (minutes < 60) {
-    return `${minutes}min`
+  return {
+    start: start.toString('yyyy-MM-dd'),
+    end: endDate.toString('yyyy-MM-dd'),
   }
-  const hours = Math.floor(minutes / 60)
-  const remainingMinutes = minutes % 60
-  return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`
-}
+})
 
-onMounted(() => {
-  // Load dummy appointments based on your schema
-  const today = DayPilot.Date.today()
+// Fetch appointments using store
+const appointmentsQuery = appointmentsStore.useAppointmentCalendar(
+  dateRange.value.start,
+  dateRange.value.end
+)
 
-  events.value = [
-    {
-      id: '1',
-      start: today.addHours(10).toString(),
-      end: today.addHours(11.5).toString(),
-      text: 'Sarah Johnson - Gel Manicure',
-      resource: 'tech-1',
-      data: {
-        appointmentNumber: 'APT-2025-001',
-        clientName: 'Sarah Johnson',
-        clientPhone: '+1 555-0101',
-        status: 'confirmed',
-        serviceName: 'Gel Manicure with Nail Art',
-        quotedPrice: 45.0,
-        technicianName: 'Sophia',
-        specialRequests: 'French tips with glitter accent',
-      },
-    },
-    {
-      id: '2',
-      start: today.addHours(12).toString(),
-      end: today.addHours(13).toString(),
-      text: 'Emma Davis - Pedicure',
-      resource: 'tech-1',
-      data: {
-        appointmentNumber: 'APT-2025-002',
-        clientName: 'Emma Davis',
-        clientPhone: '+1 555-0102',
-        status: 'in_progress',
-        serviceName: 'Spa Pedicure',
-        quotedPrice: 55.0,
-        technicianName: 'Sophia',
-        internalNotes: 'Regular customer, prefers warm water',
-      },
-    },
-    {
-      id: '3',
-      start: today.addHours(14).toString(),
-      end: today.addHours(15.5).toString(),
-      text: 'Olivia Martinez - Full Set',
-      resource: 'tech-1',
-      data: {
-        appointmentNumber: 'APT-2025-003',
-        clientName: 'Olivia Martinez',
-        clientPhone: '+1 555-0103',
-        status: 'pending',
-        bundleName: 'Full Set + Gel Polish',
-        quotedPrice: 85.0,
-        technicianName: 'Sophia',
-        specialRequests: 'Almond shape, nude colors',
-      },
-    },
-    {
-      id: '4',
-      start: today.addDays(1).addHours(10).toString(),
-      end: today.addDays(1).addHours(11).toString(),
-      text: 'Ava Wilson - Nail Repair',
-      resource: 'tech-1',
-      data: {
-        appointmentNumber: 'APT-2025-004',
-        clientName: 'Ava Wilson',
-        clientPhone: '+1 555-0104',
-        status: 'confirmed',
-        serviceName: 'Nail Repair & Polish Change',
-        quotedPrice: 30.0,
-        technicianName: 'Sophia',
-      },
-    },
-    {
-      id: '5',
-      start: today.addDays(2).addHours(15).toString(),
-      end: today.addDays(2).addHours(17).toString(),
-      text: 'Isabella Brown - Bridal Package',
-      resource: 'tech-1',
-      data: {
-        appointmentNumber: 'APT-2025-005',
-        clientName: 'Isabella Brown',
-        clientPhone: '+1 555-0105',
-        status: 'confirmed',
-        bundleName: 'Bridal Manicure & Pedicure',
-        quotedPrice: 120.0,
-        technicianName: 'Sophia',
-        specialRequests: 'Wedding on Saturday, elegant design',
-        internalNotes: 'Friend booking - 2 bridesmaids coming later',
-      },
-    },
-    {
-      id: '6',
-      start: today.addDays(-1).addHours(11).toString(),
-      end: today.addDays(-1).addHours(12).toString(),
-      text: 'Mia Anderson - Touch Up',
-      resource: 'tech-1',
-      data: {
-        appointmentNumber: 'APT-2025-006',
-        clientName: 'Mia Anderson',
-        clientPhone: '+1 555-0106',
-        status: 'completed',
-        serviceName: 'Gel Polish Touch Up',
-        quotedPrice: 25.0,
-        finalPrice: 25.0,
-        technicianName: 'Sophia',
-      },
-    },
-  ]
+// Transform appointments to calendar events
+const { events } = useAppointmentTransform(
+  computed(() => appointmentsQuery.data.value || []),
+  computed(() => 'tech-1') // Default technician ID for resource view
+)
+
+// Refetch when date range changes
+watch(dateRange, () => {
+  // The query key includes the date range, so it will automatically refetch
+  appointmentsQuery.refresh()
 })
 
 function handleTimeRangeSelection(args: TimeRangeSelection) {
@@ -278,47 +107,50 @@ function handleTimeRangeSelection(args: TimeRangeSelection) {
   // For now, just logging to console
 }
 
-function handleEventMove(args: EventMoveArgs) {
-  console.log('Appointment rescheduled:', {
-    appointmentId: args.e.data.id,
-    oldStart: args.e.data.start,
-    newStart: args.newStart.toString(),
-    newEnd: args.newEnd.toString(),
-    resource: args.newResource,
-  })
+async function handleEventMove(args: EventMoveArgs) {
+  const appointmentId = args.e.data.id as string
+  const newDate = args.newStart.toString('yyyy-MM-dd')
+  const newStartTime = args.newStart.toString('HH:mm:ss')
+  const newEndTime = args.newEnd.toString('HH:mm:ss')
 
-  // Here you would update the appointment in your database
+  try {
+    await appointmentsStore.rescheduleAppointment(appointmentId, newDate, newStartTime, newEndTime)
+    console.log('Appointment rescheduled successfully')
+  } catch (error) {
+    console.error('Failed to reschedule appointment:', error)
+    // TODO: Show error toast/notification
+    // Revert the UI change by refreshing
+    appointmentsQuery.refresh()
+  }
 }
 
-function handleEventResize(args: EventResizeArgs) {
-  console.log('Appointment duration changed:', {
-    appointmentId: args.e.data.id,
-    oldDuration: args.e.data.end - args.e.data.start,
-    newStart: args.newStart.toString(),
-    newEnd: args.newEnd.toString(),
-    newDuration: args.newEnd.getTime() - args.newStart.getTime(),
-  })
+async function handleEventResize(args: EventResizeArgs) {
+  const appointmentId = args.e.data.id as string
+  const appointmentDate = args.newStart.toString('yyyy-MM-dd')
+  const newStartTime = args.newStart.toString('HH:mm:ss')
+  const newEndTime = args.newEnd.toString('HH:mm:ss')
 
-  // Here you would update the appointment duration in your database
+  try {
+    await appointmentsStore.rescheduleAppointment(appointmentId, appointmentDate, newStartTime, newEndTime)
+    console.log('Appointment duration updated successfully')
+  } catch (error) {
+    console.error('Failed to update appointment duration:', error)
+    // TODO: Show error toast/notification
+    // Revert the UI change by refreshing
+    appointmentsQuery.refresh()
+  }
 }
 
 function handleEventClick(args: EventClickArgs) {
-  const appointment = args.e.data
-  console.log('Appointment clicked:', {
-    id: appointment.id,
-    appointmentNumber: appointment.data?.appointmentNumber,
-    clientName: appointment.data?.clientName,
-    clientPhone: appointment.data?.clientPhone,
-    status: appointment.data?.status,
-    service: appointment.data?.serviceName || appointment.data?.bundleName,
-    price: appointment.data?.quotedPrice || appointment.data?.finalPrice,
-    start: appointment.start,
-    end: appointment.end,
-    specialRequests: appointment.data?.specialRequests,
-    internalNotes: appointment.data?.internalNotes,
+  const appointmentId = args.e.data.id as string
+  appointmentsStore.setSelectedAppointment(appointmentId)
+
+  console.log('Appointment selected:', {
+    id: appointmentId,
+    data: args.e.data.data,
   })
 
-  // Here you would open a dialog/drawer to view/edit appointment details
+  // TODO: Open a sheet/drawer to view/edit appointment details
 }
 
 // Custom event rendering with shadcn-style design
@@ -438,7 +270,35 @@ function parseTime(cell: DayPilot.CalendarBeforeCellRenderArgs['cell']) {
     </div>
 
     <!-- Calendar -->
-    <div class="flex-1 border rounded-lg max-h-full bg-white shadow-sm">
+    <div class="flex-1 border rounded-lg max-h-full bg-white shadow-sm relative">
+      <!-- Loading overlay -->
+      <div v-if="appointmentsQuery.isLoading.value"
+        class="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+        <div class="flex flex-col items-center gap-3">
+          <div class="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p class="text-sm text-muted-foreground">Loading appointments...</p>
+        </div>
+      </div>
+
+      <!-- Error state -->
+      <div v-else-if="appointmentsQuery.status.value === 'error'"
+        class="absolute inset-0 bg-white flex items-center justify-center z-50 rounded-lg">
+        <div class="flex flex-col items-center gap-3 text-center p-6">
+          <svg class="w-12 h-12 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div>
+            <h3 class="font-semibold text-lg mb-1">Failed to load appointments</h3>
+            <p class="text-sm text-muted-foreground mb-4">{{ appointmentsQuery.error.value?.message }}</p>
+            <button @click="appointmentsQuery.refresh()"
+              class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition">
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+
       <DayPilotCalendar ref="calendarRef" :config="calendarConfig">
         <template #cell="args">
           <span class="text-muted-foreground/50 w-full h-full flex justify-center items-center font-mono text-3xl">{{
@@ -462,10 +322,10 @@ function parseTime(cell: DayPilot.CalendarBeforeCellRenderArgs['cell']) {
                 ]">
                   <span class="mr-1">{{
                     getStatusInfo(event.data.data?.status || 'pending').icon
-                    }}</span>
+                  }}</span>
                   <span class="hidden sm:inline">{{
                     getStatusInfo(event.data.data?.status || 'pending').label
-                    }}</span>
+                  }}</span>
                 </span>
               </div>
             </div>
@@ -491,7 +351,7 @@ function parseTime(cell: DayPilot.CalendarBeforeCellRenderArgs['cell']) {
                   <span class="text-xs">$</span>
                   <span>{{
                     (event.data.data?.quotedPrice || event.data.data?.finalPrice).toFixed(0)
-                    }}</span>
+                  }}</span>
                 </div>
               </template>
             </div>

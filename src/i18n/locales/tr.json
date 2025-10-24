@@ -32,6 +32,109 @@
     },
 
     "step2": {
+      "title": "Hesap Oluşturun",
+      "description": "Ödüllendirilir",
+      "authGateway": {
+        "headline": "Tırnak Yolculuğunuzdan Daha Fazlasını Elde Edin",
+        "subheadline": "Bu rezervasyonla özel avantajların kilidini açmak için ücretsiz hesap oluşturun",
+        "signInTab": "Giriş Yap",
+        "signUpTab": "Hesap Oluştur",
+        "guestTab": "Misafir",
+        "continueAsGuest": "Misafir olarak devam et",
+        "alreadyAuthenticated": "{name} olarak rezervasyon yapıyorsunuz",
+        "earningPoints": "Sadakat puanı kazanıyor"
+      },
+      "benefits": {
+        "trackStyle": {
+          "title": "Stilinizi Takip Edin",
+          "description": "Geçmiş randevularınızı görün ve favori tasarımlarınızı kolayca yeniden sipariş edin"
+        },
+        "earnRewards": {
+          "title": "Ödül Kazanın",
+          "description": "Her ziyarette puan kazanın ve özel indirimler elde edin"
+        },
+        "referFriends": {
+          "title": "Arkadaş Davet Edin & Kazanın",
+          "description": "Arkadaşlarınızla paylaşın - ikiniz de bir sonraki randevunuzda tasarruf edin"
+        },
+        "bookFaster": {
+          "title": "Daha Hızlı Rezervasyon",
+          "description": "Kayıtlı bilgiler gelecekteki rezervasyonlarınızı çok hızlı hale getirir"
+        },
+        "vipAccess": {
+          "title": "VIP Erişim",
+          "description": "Yeni hizmetlere ve mevsimlik promosyonlara erken erişim"
+        },
+        "accountCreated": {
+          "title": "Hesap Başarıyla Oluşturuldu",
+          "description": "Hoş geldiniz! Artık bu rezervasyonla puan kazanıyorsunuz"
+        }
+      },
+      "signIn": {
+        "title": "Tekrar Hoş Geldiniz",
+        "subtitle": "Rezervasyonunuza devam etmek için giriş yapın",
+        "emailLabel": "E-posta",
+        "emailPlaceholder": "ornek{'@'}email.com",
+        "passwordLabel": "Şifre",
+        "passwordPlaceholder": "Şifrenizi girin",
+        "forgotPassword": "Şifremi unuttum",
+        "signInButton": "Giriş Yap",
+        "signingIn": "Giriş yapılıyor...",
+        "noAccount": "Hesabınız yok mu?",
+        "createAccount": "Oluşturun",
+        "orDivider": "Veya şununla devam edin",
+        "googleButton": "Google ile devam et",
+        "errors": {
+          "invalidCredentials": "Geçersiz e-posta veya şifre",
+          "networkError": "Ağ hatası. Lütfen tekrar deneyin",
+          "unknownError": "Bir hata oluştu. Lütfen tekrar deneyin"
+        }
+      },
+      "signUp": {
+        "title": "Hesabınızı Oluşturun",
+        "subtitle": "Bu rezervasyonla ödül kazanmaya başlamak için katılın",
+        "fullNameLabel": "Ad Soyad",
+        "fullNamePlaceholder": "Adınızı ve soyadınızı girin",
+        "emailLabel": "E-posta",
+        "emailPlaceholder": "ornek{'@'}email.com",
+        "phoneLabel": "Telefon Numarası",
+        "phonePlaceholder": "+90 5XX XXX XX XX",
+        "passwordLabel": "Şifre",
+        "passwordPlaceholder": "Güvenli bir şifre oluşturun",
+        "confirmPasswordLabel": "Şifre Onayı",
+        "confirmPasswordPlaceholder": "Şifrenizi tekrar girin",
+        "agreeTerms": "Hizmet Şartlarını ve Gizlilik Politikasını kabul ediyorum",
+        "signUpButton": "Ücretsiz Hesap Oluştur",
+        "creatingAccount": "Hesap oluşturuluyor...",
+        "haveAccount": "Zaten hesabınız var mı?",
+        "signIn": "Giriş yapın",
+        "orDivider": "Veya şununla devam edin",
+        "googleButton": "Google ile kaydol",
+        "errors": {
+          "emailInUse": "Bu e-posta zaten kayıtlı",
+          "weakPassword": "Şifre en az 8 karakter olmalıdır",
+          "passwordMismatch": "Şifreler eşleşmiyor",
+          "invalidPhone": "Geçersiz telefon numarası formatı",
+          "networkError": "Ağ hatası. Lütfen tekrar deneyin",
+          "unknownError": "Bir hata oluştu. Lütfen tekrar deneyin"
+        },
+        "validation": {
+          "nameRequired": "Ad soyad gereklidir",
+          "nameTooShort": "Ad en az 2 karakter olmalıdır",
+          "emailRequired": "E-posta gereklidir",
+          "emailInvalid": "Geçersiz e-posta adresi",
+          "phoneRequired": "Telefon numarası gereklidir",
+          "phoneInvalid": "Geçersiz telefon numarası formatı",
+          "passwordRequired": "Şifre gereklidir",
+          "passwordTooShort": "Şifre en az 8 karakter olmalıdır",
+          "confirmPasswordRequired": "Lütfen şifrenizi onaylayın",
+          "passwordsMustMatch": "Şifreler eşleşmelidir",
+          "termsRequired": "Şartları kabul etmelisiniz"
+        }
+      }
+    },
+
+    "step3": {
       "title": "Bilgileriniz",
       "description": "İletişim detayları",
       "yourInformation": "Bilgileriniz",
@@ -41,7 +144,7 @@
       "whatsappHelp": "Tasarımınızı görüşmek için WhatsApp'tan sizinle iletişime geçeceğiz",
       "phone": "Telefon Numarası",
       "email": "E-posta",
-      "emailPlaceholder": "ornek@email.com",
+      "emailPlaceholder": "ornek{'@'}email.com",
       "optional": "Opsiyonel",
       "designInspiration": "Tasarım İlhamı",
       "inspirationHelp": "İstediğiniz tırnak tasarımının fotoğrafını yükleyin (opsiyonel)",
@@ -54,7 +157,7 @@
       "specialRequestsPlaceholder": "Özel tercihler veya gereksinimler..."
     },
 
-    "step3": {
+    "step4": {
       "title": "Gözden Geçir & Onayla",
       "description": "Son kontrol",
       "importantNotice": "Önemli Bilgilendirme",

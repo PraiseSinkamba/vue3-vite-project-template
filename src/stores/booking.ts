@@ -2,20 +2,10 @@ import { defineStore } from 'pinia'
 import { useQuery, useQueryCache } from '@pinia/colada'
 import { supabase } from '@/lib/supabase'
 import type { MaybeRefOrGetter } from 'vue'
-import { toValue, computed } from 'vue'
-import {
-  addMinutes,
-  format,
-  parseISO,
-  isAfter,
-  isBefore,
-  isSameDay,
-  startOfDay,
-  endOfDay,
-  getDay,
-  formatISO,
-} from 'date-fns'
-import type { Service, AddOn, Appointment, AppointmentInsert } from '@/types'
+import { toValue } from 'vue'
+import { addMinutes, format } from 'date-fns'
+import type { AddOn, Appointment, AppointmentInsert, GetTimeSlotsForDayArgs, Service, TimeSlot } from '@/types'
+import { useAuthStore } from './auth'
 
 interface ClientInfo {
   client_name: string
@@ -23,21 +13,6 @@ interface ClientInfo {
   client_phone: string
   client_email?: string
   special_requests?: string
-}
-
-interface AvailabilitySchedule {
-  id: string
-  technician_id: string
-  day_of_week: number
-  start_time: string // "09:00:00"
-  end_time: string // "17:00:00"
-  is_active: boolean
-}
-
-interface UnavailablePeriod {
-  id: string
-  start_datetime: string
-  end_datetime: string
 }
 
 interface BookingState {
@@ -49,11 +24,14 @@ interface BookingState {
   selectedDate: Date | null
   selectedTime: string | null // "14:00"
 
-  // Step 2: Client Info
+  // Step 2: Authentication (new)
+  isAuthFlowSkipped: boolean
+
+  // Step 3: Client Info
   clientInfo: ClientInfo
   inspirationImage: File | null
 
-  // Current step (1, 2, or 3)
+  // Current step (1-5: date/time, auth, client info, review, confirmation)
   currentStep: number
 
   // Default technician (will be fetched from business_settings)
@@ -67,6 +45,8 @@ export const useBookingStore = defineStore('booking', {
 
     selectedDate: null,
     selectedTime: null,
+
+    isAuthFlowSkipped: false,
 
     clientInfo: {
       client_name: '',
@@ -107,15 +87,20 @@ export const useBookingStore = defineStore('booking', {
       }
     },
 
-    // Can proceed to step 2 (client info)
+    // Can proceed to step 2 (auth gateway)
     canProceedToStep2(state): boolean {
       return !!(state.selectedDate && state.selectedTime)
     },
 
-    // Can proceed to step 3 (review)
-    canProceedToStep3(state): boolean {
+    // Can proceed to step 3 (client info)
+    canProceedToStep3(): boolean {
+      return this.canProceedToStep2
+    },
+
+    // Can proceed to step 4 (review)
+    canProceedToStep4(state): boolean {
       return (
-        this.canProceedToStep2 &&
+        this.canProceedToStep3 &&
         !!state.clientInfo.client_name &&
         !!state.clientInfo.client_whatsapp &&
         !!state.clientInfo.client_phone
@@ -152,135 +137,48 @@ export const useBookingStore = defineStore('booking', {
       })
     },
 
-    // Fetch available time slots for a specific date
+    // Fetch available time slots for a specific date using RPC function
     useAvailableSlots(
-      date: MaybeRefOrGetter<Date | null>,
+      date: MaybeRefOrGetter<Date>,
       serviceDuration: MaybeRefOrGetter<number>,
     ) {
       return useQuery({
-        key: () => {
-          const dateValue = toValue(date)
-          return [
-            'booking',
-            'available-slots',
-            dateValue ? formatISO(dateValue, { representation: 'date' }) : null,
-            toValue(serviceDuration),
-          ]
-        },
-        query: async () => {
+        key: () => ['booking', 'available-slots', format(toValue(date), 'yyyy-MM-dd')],
+        query: async (): Promise<string[]> => {
           const selectedDate = toValue(date)
-          if (!selectedDate || !this.defaultTechnicianId) return []
+          if (!selectedDate) throw new Error('Please select a date')
+          if (!this.defaultTechnicianId) {
+            const { data, error } = await supabase.from('business_settings')
+              .select('technician_id')
+              .single()
+            if (error) throw error;
+            this.defaultTechnicianId = data.technician_id as string
+          }
 
-          const dayOfWeek = getDay(selectedDate)
           const dateStr = format(selectedDate, 'yyyy-MM-dd')
-
-          // 1. Get technician's working hours for this day
-          const { data: schedule } = await supabase
-            .from('availability_schedules')
-            .select<'*', AvailabilitySchedule>('*')
-            .eq('technician_id', this.defaultTechnicianId)
-            .eq('day_of_week', dayOfWeek)
-            .eq('is_active', true)
-            .limit(1)
-            .single()
-
-          if (!schedule) return []
-
-          // 2. Get existing appointments for this date
-          const { data: appointments } = await supabase
-            .from('appointments')
-            .select('start_time, end_time, duration_minutes')
-            .eq('appointment_date', dateStr)
-            .eq('technician_id', this.defaultTechnicianId)
-            .in('status', ['pending', 'confirmed', 'in_progress'])
-
-          // 3. Get unavailable periods that overlap with this date
-          const dayStart = startOfDay(selectedDate)
-          const dayEnd = endOfDay(selectedDate)
-
-          const { data: unavailablePeriods } = await supabase
-            .from('unavailable_periods')
-            .select<'*', UnavailablePeriod>('*')
-            .eq('technician_id', this.defaultTechnicianId)
-            .gte('end_datetime', formatISO(dayStart))
-            .lte('start_datetime', formatISO(dayEnd))
-
-          // 4. Generate 30-minute time slots
           const duration = toValue(serviceDuration)
-          const slots = this.generateTimeSlots(schedule.start_time, schedule.end_time, 30)
 
-          // 5. Filter available slots
-          const now = new Date()
-          const isToday = isSameDay(selectedDate, now)
+          // Call the RPC function to get time slots
+          const { data, error } = await supabase.rpc('get_time_slots_for_day', {
+            p_date: dateStr,
+            p_technician_id: this.defaultTechnicianId,
+            p_service_duration_minutes: duration,
+            p_slot_interval_minutes: 30,
+          } as GetTimeSlotsForDayArgs)
 
-          const availableSlots = slots.filter((slotTime) => {
-            // Parse slot time
-            const slotDateTime = parseISO(`${dateStr}T${slotTime}`)
+          if (error) throw error
 
-            // Check if slot is in the past (only for today)
-            if (isToday && isBefore(slotDateTime, now)) {
-              return false
-            }
-
-            // Calculate end time for this slot (slot + service duration)
-            const slotEndTime = addMinutes(slotDateTime, duration)
-
-            // Check if service would finish before closing time
-            const closingDateTime = parseISO(`${dateStr}T${schedule.end_time}`)
-            if (isAfter(slotEndTime, closingDateTime)) {
-              return false
-            }
-
-            // Check if slot overlaps with existing appointments
-            const overlapsAppointment = appointments?.some((apt) => {
-              const aptStart = parseISO(`${dateStr}T${apt.start_time}`)
-              const aptEnd = parseISO(`${dateStr}T${apt.end_time}`)
-
-              // Slot conflicts if it starts before appointment ends and ends after appointment starts
-              return slotDateTime < aptEnd && slotEndTime > aptStart
+          // Filter to only return available slots and extract time_slot values
+          return (data as TimeSlot[])
+            .filter((slot) => slot.is_available)
+            .map((slot) => {
+              // Convert TIME format "HH:MM:SS" to "HH:MM"
+              const timeStr = slot.time_slot.toString()
+              return timeStr.substring(0, 5) // Extract HH:MM
             })
-
-            if (overlapsAppointment) return false
-
-            // Check if slot overlaps with unavailable periods
-            const overlapsUnavailable = unavailablePeriods?.some((period) => {
-              const periodStart = parseISO(period.start_datetime)
-              const periodEnd = parseISO(period.end_datetime)
-
-              return slotDateTime < periodEnd && slotEndTime > periodStart
-            })
-
-            if (overlapsUnavailable) return false
-
-            return true
-          })
-
-          return availableSlots
         },
-        staleTime: 60_000, // 1 minute
-        enabled: () => !!toValue(date) && !!this.defaultTechnicianId,
+        staleTime: 60_000,
       })
-    },
-
-    // Helper: Generate time slots in 30-min intervals
-    generateTimeSlots(startTime: string, endTime: string, intervalMinutes: number): string[] {
-      const slots: string[] = []
-
-      // Parse start and end times (format: "HH:MM:SS")
-      const [startHour, startMin] = startTime.split(':').map(Number)
-      const [endHour, endMin] = endTime.split(':').map(Number)
-
-      const startMinutes = startHour * 60 + startMin
-      const endMinutes = endHour * 60 + endMin
-
-      for (let minutes = startMinutes; minutes < endMinutes; minutes += intervalMinutes) {
-        const hours = Math.floor(minutes / 60)
-        const mins = minutes % 60
-        const timeStr = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
-        slots.push(timeStr)
-      }
-
-      return slots
     },
 
     // Set selected date and time
@@ -301,16 +199,38 @@ export const useBookingStore = defineStore('booking', {
 
     // Navigate to specific step
     goToStep(step: number) {
-      if (step >= 1 && step <= 3) {
+      if (step >= 1 && step <= 5) {
         this.currentStep = step
       }
     },
 
+    // Auto-fill client info from authenticated user profile
+    autoFillFromProfile(profile: { full_name?: string | null; phone?: string | null; email?: string }): void {
+      if (profile.full_name) {
+        this.clientInfo.client_name = profile.full_name
+      }
+      if (profile.phone) {
+        this.clientInfo.client_phone = profile.phone
+        this.clientInfo.client_whatsapp = profile.phone // Default to same number
+      }
+      if (profile.email) {
+        this.clientInfo.client_email = profile.email
+      }
+    },
+
+    // Mark auth flow as skipped (guest checkout)
+    skipAuthFlow(): void {
+      this.isAuthFlowSkipped = true
+    },
+
     // Submit booking and create appointment
     async createBooking(service: Service, addons: AddOn[]): Promise<string> {
-      if (!this.canProceedToStep3) {
+      if (!this.canProceedToStep4) {
         throw new Error('Cannot create booking: missing required information')
       }
+
+      // Get auth store to check if user is authenticated
+      const { userProfile } = useAuthStore()
 
       // 1. Upload inspiration image if provided
       let inspirationUrl: string | null = null
@@ -353,6 +273,7 @@ export const useBookingStore = defineStore('booking', {
         duration_minutes: duration,
         service_id: this.selectedServiceId!,
         quoted_price: totalPrice,
+        client_id: userProfile?.id || null, //will be set automatically in supabase
         client_name: this.clientInfo.client_name,
         client_phone: this.clientInfo.client_phone,
         client_whatsapp: this.clientInfo.client_whatsapp,
@@ -365,7 +286,7 @@ export const useBookingStore = defineStore('booking', {
       const { data: appointment, error: appointmentError } = await supabase
         .from('appointments')
         .insert(appointmentData)
-        .select<'*', Appointment>()
+        .select()
         .single()
 
       if (appointmentError) throw appointmentError
@@ -402,6 +323,6 @@ export const useBookingStore = defineStore('booking', {
 
   persist: {
     key: 'booking-store',
-    pick: ['selectedServiceId', 'selectedAddonIds', 'selectedDate', 'selectedTime', 'clientInfo'],
+    pick: ['selectedServiceId', 'selectedAddonIds', 'selectedDate', 'selectedTime', 'isAuthFlowSkipped', 'clientInfo'],
   },
 })
